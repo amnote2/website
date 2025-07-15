@@ -1,5 +1,5 @@
 import type { FormConfig, DeleteConfig } from "@/types/form"
-import { deleteCustomerAPI } from "@/api/customerApi";
+import { customerService } from "./services/customerService"
 
 export const customerFormConfig: FormConfig = {
   title: "Thông tin khách hàng",
@@ -235,8 +235,6 @@ export const customerDeleteConfig: DeleteConfig = {
   confirmText: "Xóa",
   cancelText: "Hủy",
   warningMessage: "Hành động này không thể hoàn tác. Tất cả dữ liệu liên quan sẽ bị mất.",
-  // Hàm thực thi xóa, sẽ được truyền vào TablePage hoặc modal xác nhận xóa
-  deleteHandler: deleteCustomerAPI,
 }
 
 export const customerBulkDeleteConfig: DeleteConfig = {
