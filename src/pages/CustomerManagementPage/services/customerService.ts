@@ -110,6 +110,25 @@ class CustomerService {
     }
   }
 
+  static async deleteCustomer(id: string): Promise<{ success: boolean; message: string }> {
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 500))
+      
+      // Mock successful deletion
+      return {
+        success: true,
+        message: `Đã xóa khách hàng ${id} thành công`
+      }
+    } catch (error) {
+      console.error("Delete customer error:", error)
+      return {
+        success: false,
+        message: "Xóa khách hàng thất bại!"
+      }
+    }
+  }
+
   async deleteCustomer(customerId: string): Promise<{ success: boolean; message: string }> {
     try {
       const token = await this.getAuthToken()

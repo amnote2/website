@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { X, AlertTriangle, Loader2, Trash2, AlertCircle } from "lucide-react"
 import type { DeleteConfig } from "@/types/form"
-import { customerService } from "@/pages/CustomerManagementPage/services/customerService"
 
 interface DeleteModalProps {
   isOpen: boolean
