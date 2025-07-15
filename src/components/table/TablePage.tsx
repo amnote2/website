@@ -12,7 +12,6 @@ import PrintModal from "@/components/modals/PrintModal"
 import FormModal from "@/components/forms/FormModal"
 import DeleteModal from "@/components/modals/DeleteModal"
 import { Toast } from "@/components/ui/toast" // Import the new Toast component
-import { deleteCustomerAPI } from "@/api/customerApi"
 import type { TablePageProps, BaseTableItem } from "@/types/table"
 import type { ExcelImportConfig, PrintConfig } from "@/types/modal"
 import type { FormConfig, DeleteConfig } from "@/types/form"
@@ -36,6 +35,7 @@ export function TablePage<T extends BaseTableItem>({
   onPrint,
   onAdd, // This prop now expects to return { success: boolean, message: string }
   onEdit, // This prop now expects to return { success: boolean, message: string }
+  onDelete,
   onRefresh,
   onExport,
   searchFields,
@@ -271,13 +271,18 @@ export function TablePage<T extends BaseTableItem>({
   // Xử lý xóa thực tế qua API
   const handleDeleteConfirm = useCallback(async () => {
     if (deletingItem) {
+      if (!onDelete) {
+        throw new Error("Chức năng xóa chưa được cấu hình")
+      }
+      
       // Check if the item has children
       const hasChildren = childrenMap[deletingItem.id]?.length > 0
       if (hasChildren) {
         throw new Error("Không thể xóa đối tượng cha khi còn đối tượng con. Vui lòng xóa các đối tượng con trước.")
       }
-      // Gọi API xóa
-      const result = await deleteCustomerAPI(deletingItem.id)
+      
+      // Call the onDelete prop passed from parent
+      const result = await onDelete(deletingItem.id)
       if (result.success) {
         setTableData((prev) => prev.filter((item) => item.id !== deletingItem.id))
         setDeletingItem(null)
@@ -288,7 +293,7 @@ export function TablePage<T extends BaseTableItem>({
         setShowToast(true)
       }
     }
-  }, [deletingItem, tableData, childrenMap])
+  }, [deletingItem, tableData, childrenMap, onDelete])
 
   // Remove undo logic from handleBulkDeleteConfirm
   const handleBulkDeleteConfirm = useCallback(async () => {

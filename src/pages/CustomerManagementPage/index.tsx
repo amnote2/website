@@ -10,7 +10,7 @@ import { exportToExcel } from "@/lib/excelUtils"
 import { useCustomerData } from "./hooks/useCustomerData"
 
 export default function CustomerManagementPage() {
-  const { data, isLoading, handleRefresh, handleAdd, handleEdit } = useCustomerData()
+  const { data, isLoading, handleRefresh, handleAdd, handleEdit, handleDelete } = useCustomerData()
 
   const handleImport = useCallback((rows: any[], method: "add" | "update" | "overwrite") => {
     console.log("Import customer data:", rows, "Method:", method)
@@ -36,6 +36,7 @@ export default function CustomerManagementPage() {
       onPrint={handlePrint}
       onAdd={handleAdd}
       onEdit={handleEdit}
+      onDelete={handleDelete}
       onRefresh={handleRefresh}
       onExport={handleExport}
       searchFields={["id", "nameVi", "nameEn", "nameKo", "taxCode", "email", "tel", "address"]}

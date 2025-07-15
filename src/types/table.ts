@@ -24,7 +24,7 @@ export interface TablePageProps<T extends BaseTableItem> {
   onPrint?: (lang: "vi" | "en" | "ko") => void
   onAdd?: (newItem: Customer) => void
   onEdit?: (item: T) => void
-  onDelete?: (id: string) => void
+  onDelete?: (id: string) => Promise<{ success: boolean; message: string }>
   onBulkDelete?: (ids: string[]) => void
   onRefresh?: () => Promise<void>
   onExport?: () => void

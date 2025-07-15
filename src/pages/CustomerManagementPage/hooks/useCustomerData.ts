@@ -69,11 +69,28 @@ export function useCustomerData() {
     }
   }, [handleRefresh])
 
+  // Delete customer handler
+  const handleDelete = useCallback(async (id: string) => {
+    try {
+      const result = await customerService.deleteCustomer(id)
+      if (result.success) {
+        await handleRefresh()
+        return { success: true, message: result.message || "Xóa khách hàng thành công!" }
+      } else {
+        return { success: false, message: result.message || "Xóa khách hàng thất bại!" }
+      }
+    } catch (error) {
+      console.error("Failed to delete customer:", error)
+      return { success: false, message: "Xóa khách hàng thất bại!" }
+    }
+  }, [handleRefresh])
+
   return {
     data,
     isLoading: isLoading || isEditLoading,
     handleRefresh,
     handleAdd,
     handleEdit,
+    handleDelete,
   }
 }
