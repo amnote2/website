@@ -275,8 +275,6 @@ function SidebarMenuNode({
 
   const handleToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Không cho phép toggle khi đang search
-    if (isSearching) return;
     
     if (isExpanded) {
       setExpandedPath(expandedPath.slice(0, level)); // Đóng menu cha
@@ -341,6 +339,14 @@ function SidebarMenuNode({
             <span className={`text-sm ${level > 0 ? 'font-normal' : 'font-medium'} ${level > 0 && isActive ? 'text-red-700 font-bold' : ''}`}>{highlightText(node.title, (typeof window !== 'undefined' && window.document) ? (document.querySelector('input[placeholder="Tìm kiếm menu..."]') as HTMLInputElement)?.value || '' : '')}</span>
           </div>
           {hasChildren && !isSearching && (
+            <span
+              className={`transition-transform duration-200 cursor-pointer ${isExpanded ? 'rotate-180' : ''}`}
+              onClick={handleToggle}
+            >
+              <ChevronDown size={14} className="text-gray-400 hover:text-red-400" />
+            </span>
+          )}
+          {hasChildren && isSearching && (
             <span
               className={`transition-transform duration-200 cursor-pointer ${isExpanded ? 'rotate-180' : ''}`}
               onClick={handleToggle}
