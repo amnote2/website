@@ -240,6 +240,7 @@ function SidebarMenuNode({
   onMenuSelect,
   location,
   setExpandedPath,
+  isSearching = false,
 }: {
   node: MenuItem | (SubMenuItem & { subItems?: SubMenuItem[] });
   level?: number;
@@ -247,10 +248,11 @@ function SidebarMenuNode({
   onMenuSelect: (id: string) => void;
   location: ReturnType<typeof useLocation>;
   setExpandedPath: React.Dispatch<React.SetStateAction<string[]>>;
+  isSearching?: boolean;
 }) {
   const isMenuItem = (n: any): n is MenuItem => !!(n as MenuItem).icon;
   const hasChildren = !!node.subItems && node.subItems.length > 0;
-  const isExpanded = expandedPath[level] === node.id;
+  const isExpanded = isSearching ? true : expandedPath[level] === node.id;
 
   // Determine if this node or any of its subItems is active
   const isActive = (() => {
@@ -273,6 +275,9 @@ function SidebarMenuNode({
 
   const handleToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
+    // Không cho phép toggle khi đang search
+    if (isSearching) return;
+    
     if (isExpanded) {
       setExpandedPath(expandedPath.slice(0, level)); // Đóng menu cha
     } else {
@@ -335,7 +340,7 @@ function SidebarMenuNode({
             )}
             <span className={`text-sm ${level > 0 ? 'font-normal' : 'font-medium'} ${level > 0 && isActive ? 'text-red-700 font-bold' : ''}`}>{highlightText(node.title, (typeof window !== 'undefined' && window.document) ? (document.querySelector('input[placeholder="Tìm kiếm menu..."]') as HTMLInputElement)?.value || '' : '')}</span>
           </div>
-          {hasChildren && (
+          {hasChildren && !isSearching && (
             <span
               className={`transition-transform duration-200 cursor-pointer ${isExpanded ? 'rotate-180' : ''}`}
               onClick={handleToggle}
@@ -356,6 +361,7 @@ function SidebarMenuNode({
               onMenuSelect={onMenuSelect}
               location={location}
               setExpandedPath={setExpandedPath}
+              isSearching={isSearching}
             />
           ))}
         </div>
@@ -448,20 +454,21 @@ export default function Sidebar({
       if (!originalMenuState) {
         setOriginalMenuState({ expandedPath, activeMenu });
       }
-      // Tìm path đầu tiên đến node đầu tiên chứa từ khóa
-      let firstPath: string[] | null = null;
+      // Khi search, mở tất cả menu có kết quả khớp
+      const allMatchedPaths: string[] = [];
       for (const group of menuGroups) {
         const paths = findAllPathsToMatchedNodes(group.items, searchTerm, [group.id]);
-        if (paths.length > 0) {
-          firstPath = paths[0];
-          break;
-        }
+        paths.forEach(path => {
+          // Thêm tất cả các node trong path vào danh sách expanded
+          path.forEach(nodeId => {
+            if (!allMatchedPaths.includes(nodeId)) {
+              allMatchedPaths.push(nodeId);
+            }
+          });
+        });
       }
-      if (firstPath) {
-        setExpandedPath(firstPath);
-      } else {
-        setExpandedPath([]); // Không có kết quả thì đóng hết
-      }
+      // Set expanded path để hiển thị tất cả menu có kết quả
+      setExpandedPath(allMatchedPaths);
     } else {
       // Khi xóa search, kiểm tra trạng thái menu
       if (originalMenuState) {
@@ -584,6 +591,7 @@ export default function Sidebar({
                           onMenuSelect={handleMenuSelect}
                           location={location}
                           setExpandedPath={setExpandedPath}
+                          isSearching={!!searchTerm}
                         />
                       ))}
                     </div>
@@ -661,6 +669,7 @@ export default function Sidebar({
                     onMenuSelect={handleMenuSelect}
                     location={location}
                     setExpandedPath={setExpandedPath}
+                    isSearching={!!searchTerm}
                   />
                 ))}
               </div>
