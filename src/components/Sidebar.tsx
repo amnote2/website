@@ -342,7 +342,7 @@ function SidebarMenuNode({
             )}
             <span className={`text-sm ${level > 0 ? 'font-normal' : 'font-medium'} ${level > 0 && isActive ? 'text-red-700 font-bold' : ''}`}>{highlightText(node.title, (typeof window !== 'undefined' && window.document) ? (document.querySelector('input[placeholder="Tìm kiếm menu..."]') as HTMLInputElement)?.value || '' : '')}</span>
           </div>
-          {hasChildren && level === 0 && (
+          {hasChildren && (level === 0 || level === 1) && (
             <span
               className={`transition-transform duration-200 cursor-pointer ${isExpanded ? 'rotate-180' : ''}`}
               onClick={handleToggle}
