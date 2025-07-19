@@ -336,17 +336,13 @@ function SidebarMenuNode({
             {isMenuItem(node) && level === 0 && node.icon && (
               <span className="flex-shrink-0 text-gray-400">{iconMap[node.icon]}</span>
             )}
+            {/* Show red circle for sub menu items (level > 0) */}
+            {level > 0 && (
+              <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
+            )}
             <span className={`text-sm ${level > 0 ? 'font-normal' : 'font-medium'} ${level > 0 && isActive ? 'text-red-700 font-bold' : ''}`}>{highlightText(node.title, (typeof window !== 'undefined' && window.document) ? (document.querySelector('input[placeholder="Tìm kiếm menu..."]') as HTMLInputElement)?.value || '' : '')}</span>
           </div>
-          {hasChildren && !isSearching && (
-            <span
-              className={`transition-transform duration-200 cursor-pointer ${isExpanded ? 'rotate-180' : ''}`}
-              onClick={handleToggle}
-            >
-              <ChevronDown size={14} className="text-gray-400 hover:text-red-400" />
-            </span>
-          )}
-          {hasChildren && isSearching && (
+          {hasChildren && level === 0 && (
             <span
               className={`transition-transform duration-200 cursor-pointer ${isExpanded ? 'rotate-180' : ''}`}
               onClick={handleToggle}
