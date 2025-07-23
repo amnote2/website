@@ -172,7 +172,7 @@ const FirmbankingTab: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowAccountForm(true)}
-                className="inline-flex items-center px-3 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors duration-200"
+                className="inline-flex items-center px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors duration-200"
               >
                 <Plus className="w-4 h-4 mr-1" />
                 Thêm tài khoản
@@ -299,7 +299,7 @@ const FirmbankingTab: React.FC = () => {
                   <button
                     type="button"
                     onClick={editingAccount ? handleUpdateAccount : handleAddAccount}
-                    className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors duration-200"
+                    className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors duration-200"
                   >
                     {editingAccount ? 'Cập nhật' : 'Thêm'}
                   </button>
@@ -359,7 +359,7 @@ const FirmbankingTab: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowQuestionForm(true)}
-                className="inline-flex items-center px-3 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors duration-200"
+                className="inline-flex items-center px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors duration-200"
               >
                 <Plus className="w-4 h-4 mr-1" />
                 Thêm câu hỏi
@@ -432,7 +432,7 @@ const FirmbankingTab: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleAddQuestion}
-                    className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors duration-200"
+                    className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors duration-200"
                   >
                     Thêm
                   </button>
@@ -455,7 +455,7 @@ const FirmbankingTab: React.FC = () => {
           <div className="flex justify-end">
             <button
               type="submit"
-              className="inline-flex items-center px-6 py-3 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-200"
+              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
             >
               <Save className="w-5 h-5 mr-2" />
               Lưu cài đặt

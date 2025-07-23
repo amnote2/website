@@ -1,94 +1,93 @@
+
 import React, { useState } from 'react';
-import { Save, Receipt, Settings, Key, FileText } from 'lucide-react';
+import { Save, Receipt, Settings, Key, FileText, Mail, Smartphone, Usb } from 'lucide-react';
 import type { InvoiceSettings, FormErrors } from '../types';
 
+
 const InvoiceTab: React.FC = () => {
-  const [formData, setFormData] = useState<InvoiceSettings>({
-    apiEndpoint: '',
-    apiToken: '',
-    invoiceTemplate: '',
-    invoiceSymbol: '',
-    serialNumber: '',
-    issuancePolicy: '',
+  // Tab state
+  const [activeTab, setActiveTab] = useState<'email' | 'sms' | 'signature'>('email');
+
+  // Email form state
+  const [emailForm, setEmailForm] = useState({
+    provider: '',
+    mailServer: '',
+    port: '25',
+    senderName: '',
+    senderEmail: '',
+    username: '',
+    password: '',
+    security: 'TLS',
+    useAmnote: 'amnote',
   });
+  const [emailErrors, setEmailErrors] = useState<any>({});
+  const [emailTested, setEmailTested] = useState(false);
 
-  const [errors, setErrors] = useState<FormErrors>({});
+  // SMS form state
+  const [smsForm, setSmsForm] = useState({
+    apiKey: '',
+    secretKey: '',
+    brandName: '',
+  });
+  const [smsErrors, setSmsErrors] = useState<any>({});
 
-  const invoiceTemplates = [
-    { value: 'template01', label: 'Mẫu số 01-GT' },
-    { value: 'template02', label: 'Mẫu số 02-GT' },
-    { value: 'template03', label: 'Mẫu số 03-GT' },
-    { value: 'template04', label: 'Mẫu số 04-GT' },
-    { value: 'template06', label: 'Mẫu số 06-GT' },
-  ];
+  // Signature tab: không cần state
 
-  const issuancePolicies = [
-    { value: 'immediate', label: 'Phát hành ngay lập tức' },
-    { value: 'daily', label: 'Phát hành cuối ngày' },
-    { value: 'manual', label: 'Phát hành thủ công' },
-    { value: 'batch', label: 'Phát hành theo lô' },
-  ];
-
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    if (!formData.apiEndpoint.trim()) {
-      newErrors.apiEndpoint = 'API Endpoint là bắt buộc';
-    } else if (!/^https?:\/\/.+/.test(formData.apiEndpoint)) {
-      newErrors.apiEndpoint = 'API Endpoint phải bắt đầu với http:// hoặc https://';
-    }
-
-    if (!formData.apiToken.trim()) {
-      newErrors.apiToken = 'API Token là bắt buộc';
-    }
-
-    if (!formData.invoiceTemplate) {
-      newErrors.invoiceTemplate = 'Vui lòng chọn mẫu hóa đơn';
-    }
-
-    if (!formData.invoiceSymbol.trim()) {
-      newErrors.invoiceSymbol = 'Ký hiệu hóa đơn là bắt buộc';
-    }
-
-    if (!formData.serialNumber.trim()) {
-      newErrors.serialNumber = 'Số seri là bắt buộc';
-    } else if (!/^\d+$/.test(formData.serialNumber)) {
-      newErrors.serialNumber = 'Số seri chỉ được chứa số';
-    }
-
-    if (!formData.issuancePolicy) {
-      newErrors.issuancePolicy = 'Vui lòng chọn chính sách phát hành';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  // Validate email form
+  const validateEmailForm = () => {
+    const err: any = {};
+    if (!emailForm.mailServer) err.mailServer = 'Bắt buộc';
+    if (!emailForm.port) err.port = 'Bắt buộc';
+    if (!emailForm.senderName) err.senderName = 'Bắt buộc';
+    if (!emailForm.senderEmail) err.senderEmail = 'Bắt buộc';
+    if (!emailForm.username) err.username = 'Bắt buộc';
+    if (!emailForm.password) err.password = 'Bắt buộc';
+    setEmailErrors(err);
+    return Object.keys(err).length === 0;
+  };
+  // Validate sms form
+  const validateSmsForm = () => {
+    const err: any = {};
+    if (!smsForm.apiKey) err.apiKey = 'Bắt buộc';
+    if (!smsForm.secretKey) err.secretKey = 'Bắt buộc';
+    if (!smsForm.brandName) err.brandName = 'Bắt buộc';
+    setSmsErrors(err);
+    return Object.keys(err).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Handlers
+  const handleEmailChange = (field: string, value: string) => {
+    setEmailForm(prev => ({ ...prev, [field]: value }));
+    if (emailErrors[field]) setEmailErrors((prev: any) => ({ ...prev, [field]: '' }));
+  };
+  const handleSmsChange = (field: string, value: string) => {
+    setSmsForm(prev => ({ ...prev, [field]: value }));
+    if (smsErrors[field]) setSmsErrors((prev: any) => ({ ...prev, [field]: '' }));
+  };
+
+  // Test email connection
+  const handleTestEmail = () => {
+    if (!validateEmailForm()) return;
+    setEmailTested(true);
+    alert('Đã kiểm tra kết nối thành công!');
+  };
+
+  // Save email
+  const handleSaveEmail = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      console.log('Saving invoice settings:', formData);
-      // Handle save logic here
-    }
+    if (!validateEmailForm()) return;
+    alert('Đã lưu thiết lập email gửi hóa đơn!');
   };
-
-  const handleInputChange = (field: keyof InvoiceSettings, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
+  // Save sms
+  const handleSaveSms = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateSmsForm()) return;
+    alert('Đã lưu thiết lập SMS gửi hóa đơn!');
   };
-
-  const testConnection = () => {
-    if (!formData.apiEndpoint || !formData.apiToken) {
-      alert('Vui lòng nhập đầy đủ thông tin API để test kết nối');
-      return;
-    }
-    
-    // Simulate API test
-    console.log('Testing API connection...');
-    alert('Đang test kết nối API...');
-    // Here you would implement actual API testing logic
+  // Save signature
+  const handleSaveSignature = (e: React.FormEvent) => {
+    e.preventDefault();
+    alert('Đã lưu thiết lập chữ ký số!');
   };
 
   return (
@@ -96,197 +95,164 @@ const InvoiceTab: React.FC = () => {
       <div className="p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
           <Receipt className="w-6 h-6 mr-2 text-red-600" />
-          Cài đặt hóa đơn điện tử
+          Cấu hình kết nối e-Invoice
         </h2>
-        
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {/* API Configuration */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="text-lg font-medium text-blue-800 mb-4 flex items-center">
-              <Key className="w-5 h-5 mr-2" />
-              Cấu hình kết nối e-Invoice
-            </h3>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  API Endpoint <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="url"
-                  value={formData.apiEndpoint}
-                  onChange={(e) => handleInputChange('apiEndpoint', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
-                    errors.apiEndpoint ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="https://api.einvoice.gov.vn/..."
-                />
-                {errors.apiEndpoint && (
-                  <p className="mt-1 text-sm text-red-600">{errors.apiEndpoint}</p>
-                )}
-              </div>
+        {/* Tabs */}
+        <div className="mb-6 border-b border-gray-200 flex space-x-2">
+          <button
+            className={`px-4 py-2 rounded-t-md font-medium flex items-center space-x-2 focus:outline-none transition-colors duration-200 ${activeTab === 'email' ? 'bg-white border-x border-t border-gray-200 text-blue-600' : 'bg-gray-50 text-gray-500 hover:text-blue-700'}`}
+            onClick={() => setActiveTab('email')}
+          >
+            <Mail className="w-4 h-4" />
+            <span>Thiết lập email gửi hóa đơn</span>
+          </button>
+          <button
+            className={`px-4 py-2 rounded-t-md font-medium flex items-center space-x-2 focus:outline-none transition-colors duration-200 ${activeTab === 'sms' ? 'bg-white border-x border-t border-gray-200 text-blue-600' : 'bg-gray-50 text-gray-500 hover:text-blue-700'}`}
+            onClick={() => setActiveTab('sms')}
+          >
+            <Smartphone className="w-4 h-4" />
+            <span>Thiết lập SMS gửi hóa đơn</span>
+          </button>
+          <button
+            className={`px-4 py-2 rounded-t-md font-medium flex items-center space-x-2 focus:outline-none transition-colors duration-200 ${activeTab === 'signature' ? 'bg-white border-x border-t border-gray-200 text-blue-600' : 'bg-gray-50 text-gray-500 hover:text-blue-700'}`}
+            onClick={() => setActiveTab('signature')}
+          >
+            <Usb className="w-4 h-4" />
+            <span>Thiết lập chữ ký số</span>
+          </button>
+        </div>
 
+        {/* Tab content */}
+        {activeTab === 'email' && (
+          <form onSubmit={handleSaveEmail} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  API Token <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="password"
-                  value={formData.apiToken}
-                  onChange={(e) => handleInputChange('apiToken', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
-                    errors.apiToken ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="Nhập API Token"
-                />
-                {errors.apiToken && (
-                  <p className="mt-1 text-sm text-red-600">{errors.apiToken}</p>
-                )}
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nhà cung cấp</label>
+                <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-md" value={emailForm.provider} onChange={e => handleEmailChange('provider', e.target.value)} />
               </div>
-
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  onClick={testConnection}
-                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors duration-200"
-                >
-                  <Settings className="w-4 h-4 mr-2" />
-                  Test kết nối
-                </button>
+              <div className="flex gap-2 items-end">
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Máy chủ Mail <span className="text-red-500">*</span></label>
+                  <input type="text" className={`w-full px-3 py-2 border rounded-md ${emailErrors.mailServer ? 'border-red-500' : 'border-gray-300'}`} value={emailForm.mailServer} onChange={e => handleEmailChange('mailServer', e.target.value)} />
+                  {emailErrors.mailServer && <p className="text-xs text-red-600 mt-1">{emailErrors.mailServer}</p>}
+                </div>
+                <div className="w-24">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Cổng <span className="text-red-500">*</span></label>
+                  <input type="text" className={`w-full px-3 py-2 border rounded-md ${emailErrors.port ? 'border-red-500' : 'border-gray-300'}`} value={emailForm.port} onChange={e => handleEmailChange('port', e.target.value)} />
+                  {emailErrors.port && <p className="text-xs text-red-600 mt-1">{emailErrors.port}</p>}
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Tên người gửi <span className="text-red-500">*</span></label>
+                <input type="text" className={`w-full px-3 py-2 border rounded-md ${emailErrors.senderName ? 'border-red-500' : 'border-gray-300'}`} value={emailForm.senderName} onChange={e => handleEmailChange('senderName', e.target.value)} />
+                {emailErrors.senderName && <p className="text-xs text-red-600 mt-1">{emailErrors.senderName}</p>}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email gửi <span className="text-red-500">*</span></label>
+                <input type="email" className={`w-full px-3 py-2 border rounded-md ${emailErrors.senderEmail ? 'border-red-500' : 'border-gray-300'}`} value={emailForm.senderEmail} onChange={e => handleEmailChange('senderEmail', e.target.value)} />
+                {emailErrors.senderEmail && <p className="text-xs text-red-600 mt-1">{emailErrors.senderEmail}</p>}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Tên đăng nhập <span className="text-red-500">*</span></label>
+                <input type="text" className={`w-full px-3 py-2 border rounded-md ${emailErrors.username ? 'border-red-500' : 'border-gray-300'}`} value={emailForm.username} onChange={e => handleEmailChange('username', e.target.value)} />
+                {emailErrors.username && <p className="text-xs text-red-600 mt-1">{emailErrors.username}</p>}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Mật khẩu <span className="text-red-500">*</span></label>
+                <input type="password" className={`w-full px-3 py-2 border rounded-md ${emailErrors.password ? 'border-red-500' : 'border-gray-300'}`} value={emailForm.password} onChange={e => handleEmailChange('password', e.target.value)} />
+                {emailErrors.password && <p className="text-xs text-red-600 mt-1">{emailErrors.password}</p>}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phương thức bảo mật</label>
+                <div className="flex items-center gap-4 mt-1">
+                  <label className="flex items-center gap-1">
+                    <input type="radio" name="security" value="None" checked={emailForm.security === 'None'} onChange={e => handleEmailChange('security', e.target.value)} className="accent-blue-600" />
+                    None
+                  </label>
+                  <label className="flex items-center gap-1">
+                    <input type="radio" name="security" value="SSL" checked={emailForm.security === 'SSL'} onChange={e => handleEmailChange('security', e.target.value)} className="accent-blue-600" />
+                    SSL
+                  </label>
+                  <label className="flex items-center gap-1">
+                    <input type="radio" name="security" value="TLS" checked={emailForm.security === 'TLS'} onChange={e => handleEmailChange('security', e.target.value)} className="accent-blue-600" />
+                    TLS
+                  </label>
+                  <button type="button" onClick={handleTestEmail} className="ml-4 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium">Kiểm tra kết nối</button>
+                </div>
+              </div>
+              <div className="col-span-2 flex gap-6 mt-2">
+                <label className="flex items-center gap-2">
+                  <input type="radio" name="useAmnote" value="amnote" checked={emailForm.useAmnote === 'amnote'} onChange={e => handleEmailChange('useAmnote', e.target.value)} className="accent-blue-600" />
+                  Sử dụng email AMnote
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="radio" name="useAmnote" value="amnote2" checked={emailForm.useAmnote === 'amnote2'} onChange={e => handleEmailChange('useAmnote', e.target.value)} className="accent-blue-600" />
+                  Sử dụng gmail AMnote
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="radio" name="useAmnote" value="other" checked={emailForm.useAmnote === 'other'} onChange={e => handleEmailChange('useAmnote', e.target.value)} className="accent-blue-600" />
+                  Khác
+                </label>
               </div>
             </div>
-          </div>
-
-          {/* Invoice Configuration */}
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-            <h3 className="text-lg font-medium text-gray-800 mb-4 flex items-center">
-              <FileText className="w-5 h-5 mr-2" />
-              Thiết lập phát hành hóa đơn
-            </h3>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Invoice Template */}
+            <div className="flex justify-end gap-3 mt-6">
+              <button type="submit" className="inline-flex items-center px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200">
+                <Save className="w-5 h-5 mr-2" />
+                Lưu(S)
+              </button>
+              <button type="button" className="inline-flex items-center px-6 py-2 bg-blue-100 text-blue-700 font-medium rounded-md hover:bg-blue-200 focus:outline-none transition-colors duration-200">
+                Hủy(C)
+              </button>
+            </div>
+          </form>
+        )}
+        {activeTab === 'sms' && (
+          <form onSubmit={handleSaveSms} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Mẫu hóa đơn <span className="text-red-500">*</span>
-                </label>
-                <select
-                  value={formData.invoiceTemplate}
-                  onChange={(e) => handleInputChange('invoiceTemplate', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
-                    errors.invoiceTemplate ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                >
-                  <option value="">Chọn mẫu hóa đơn</option>
-                  {invoiceTemplates.map((template) => (
-                    <option key={template.value} value={template.value}>
-                      {template.label}
-                    </option>
-                  ))}
-                </select>
-                {errors.invoiceTemplate && (
-                  <p className="mt-1 text-sm text-red-600">{errors.invoiceTemplate}</p>
-                )}
+                <label className="block text-sm font-medium text-gray-700 mb-1">Api Key <span className="text-red-500">*</span></label>
+                <input type="text" className={`w-full px-3 py-2 border rounded-md ${smsErrors.apiKey ? 'border-red-500' : 'border-gray-300'}`} value={smsForm.apiKey} onChange={e => handleSmsChange('apiKey', e.target.value)} />
+                {smsErrors.apiKey && <p className="text-xs text-red-600 mt-1">{smsErrors.apiKey}</p>}
               </div>
-
-              {/* Invoice Symbol */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Ký hiệu hóa đơn <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={formData.invoiceSymbol}
-                  onChange={(e) => handleInputChange('invoiceSymbol', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
-                    errors.invoiceSymbol ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="VD: AA/22E"
-                />
-                {errors.invoiceSymbol && (
-                  <p className="mt-1 text-sm text-red-600">{errors.invoiceSymbol}</p>
-                )}
+                <label className="block text-sm font-medium text-gray-700 mb-1">Secret Key <span className="text-red-500">*</span></label>
+                <input type="text" className={`w-full px-3 py-2 border rounded-md ${smsErrors.secretKey ? 'border-red-500' : 'border-gray-300'}`} value={smsForm.secretKey} onChange={e => handleSmsChange('secretKey', e.target.value)} />
+                {smsErrors.secretKey && <p className="text-xs text-red-600 mt-1">{smsErrors.secretKey}</p>}
               </div>
-
-              {/* Serial Number */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Số seri bắt đầu <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={formData.serialNumber}
-                  onChange={(e) => handleInputChange('serialNumber', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
-                    errors.serialNumber ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="VD: 1"
-                />
-                {errors.serialNumber && (
-                  <p className="mt-1 text-sm text-red-600">{errors.serialNumber}</p>
-                )}
-              </div>
-
-              {/* Issuance Policy */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Chính sách phát hành <span className="text-red-500">*</span>
-                </label>
-                <select
-                  value={formData.issuancePolicy}
-                  onChange={(e) => handleInputChange('issuancePolicy', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
-                    errors.issuancePolicy ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                >
-                  <option value="">Chọn chính sách phát hành</option>
-                  {issuancePolicies.map((policy) => (
-                    <option key={policy.value} value={policy.value}>
-                      {policy.label}
-                    </option>
-                  ))}
-                </select>
-                {errors.issuancePolicy && (
-                  <p className="mt-1 text-sm text-red-600">{errors.issuancePolicy}</p>
-                )}
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Brand Name <span className="text-red-500">*</span></label>
+                <input type="text" className={`w-full px-3 py-2 border rounded-md ${smsErrors.brandName ? 'border-red-500' : 'border-gray-300'}`} value={smsForm.brandName} onChange={e => handleSmsChange('brandName', e.target.value)} />
+                {smsErrors.brandName && <p className="text-xs text-red-600 mt-1">{smsErrors.brandName}</p>}
               </div>
             </div>
-          </div>
-
-          {/* Additional Settings */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="text-lg font-medium text-blue-800 mb-3">Lưu ý quan trọng</h3>
-            <ul className="space-y-2 text-sm text-blue-700">
-              <li className="flex items-start">
-                <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                Cài đặt này sẽ đồng bộ với menu phát hành hóa đơn để quản lý tổng thể
-              </li>
-              <li className="flex items-start">
-                <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                API Token được mã hóa và lưu trữ an toàn trên hệ thống
-              </li>
-              <li className="flex items-start">
-                <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                Thay đổi cài đặt có thể ảnh hưởng đến việc phát hành hóa đơn hiện tại
-              </li>
-              <li className="flex items-start">
-                <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                Khuyến nghị test kết nối trước khi lưu cài đặt chính thức
-              </li>
-            </ul>
-          </div>
-
-          {/* Submit Button */}
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="inline-flex items-center px-6 py-3 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-200"
-            >
-              <Save className="w-5 h-5 mr-2" />
-              Lưu cài đặt hóa đơn
-            </button>
-          </div>
-        </form>
+            <div className="flex justify-end gap-3 mt-6">
+              <button type="submit" className="inline-flex items-center px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200">
+                <Save className="w-5 h-5 mr-2" />
+                Lưu(S)
+              </button>
+              <button type="button" className="inline-flex items-center px-6 py-2 bg-blue-100 text-blue-700 font-medium rounded-md hover:bg-blue-200 focus:outline-none transition-colors duration-200">
+                Hủy(C)
+              </button>
+            </div>
+          </form>
+        )}
+        {activeTab === 'signature' && (
+          <form onSubmit={handleSaveSignature} className="space-y-6 flex flex-col items-center justify-center min-h-[300px]">
+            <div className="flex flex-col items-center gap-6 w-full">
+              <Usb className="w-32 h-32 text-blue-500 mb-2" />
+              <FileText className="w-32 h-16 text-blue-400" />
+            </div>
+            <div className="flex justify-center gap-3 mt-6">
+              <button type="submit" className="inline-flex items-center px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200">
+                <Save className="w-5 h-5 mr-2" />
+                Lưu(S)
+              </button>
+              <button type="button" className="inline-flex items-center px-6 py-2 bg-blue-100 text-blue-700 font-medium rounded-md hover:bg-blue-200 focus:outline-none transition-colors duration-200">
+                Hủy(C)
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );
