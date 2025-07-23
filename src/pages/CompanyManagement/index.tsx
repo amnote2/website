@@ -49,11 +49,8 @@ const generateMockData = (count: number): Company[] => {
 export default function CompanyManagementPage() {
 
   const [data, setData] = useState<Company[]>(() => generateMockData(100))
-  const [modalOpen, setModalOpen] = useState(false)
-  const [modalMode, setModalMode] = useState<"add"|"edit">("add")
-  const [editingCompany, setEditingCompany] = useState<Company | undefined>(undefined)
 
-  const handleImport = useCallback((rows: any[], method: "add" | "update" | "overwrite") => {
+  const handleImport = useCallback((_rows: any[], _method: "add" | "update" | "overwrite") => {
     // Xử lý import excel nếu cần
   }, [])
 
@@ -61,29 +58,36 @@ export default function CompanyManagementPage() {
     window.print()
   }, [])
 
-
-  // Xử lý lưu khi submit modal
-  const handleModalSubmit = async (item: Company) => {
-    if (modalMode === "add") {
-      setData((prev) => [...prev, { ...item, id: Date.now().toString() }])
-    } else if (modalMode === "edit" && item.id) {
-      setData((prev) => prev.map((c) => (c.id === item.id ? item : c)))
+  // Hàm onAdd, onEdit đúng kiểu TablePage yêu cầu (trả về Promise)
+  const handleAddCompany = async (formData: Company) => {
+    try {
+      // Thêm company mới vào data
+      const newCompany = { ...formData, id: Date.now().toString() }
+      setData((prev) => [...prev, newCompany])
+      return { success: true, message: "Thêm công ty thành công!" }
+    } catch (error) {
+      return { success: false, message: "Có lỗi xảy ra khi thêm công ty!" }
     }
   }
 
-  // Hàm onAdd, onEdit đúng kiểu TablePage yêu cầu (trả về Promise)
-  const handleAddCompany = async () => {
-    setModalMode("add")
-    setEditingCompany(undefined)
-    setModalOpen(true)
-    return Promise.resolve({ success: true, message: "" })
+  const handleEditCompany = async (formData: Company) => {
+    try {
+      // Cập nhật company trong data
+      setData((prev) => prev.map((c) => (c.id === formData.id ? formData : c)))
+      return { success: true, message: "Cập nhật công ty thành công!" }
+    } catch (error) {
+      return { success: false, message: "Có lỗi xảy ra khi cập nhật công ty!" }
+    }
   }
 
-  const handleEditCompany = async (row: Company) => {
-    setModalMode("edit")
-    setEditingCompany(row)
-    setModalOpen(true)
-    return Promise.resolve({ success: true, message: "" })
+  // Hàm xử lý xóa company
+  const handleDeleteCompany = async (id: string) => {
+    try {
+      setData((prev) => prev.filter((c) => c.id !== id))
+      return { success: true, message: "Xóa công ty thành công!" }
+    } catch (error) {
+      return { success: false, message: "Có lỗi xảy ra khi xóa công ty!" }
+    }
   }
 
   const handleRefresh = useCallback(async () => {
@@ -118,6 +122,7 @@ export default function CompanyManagementPage() {
         FormModalComponent={CompanyFormModal}
         onAdd={handleAddCompany}
         onEdit={handleEditCompany}
+        onDelete={handleDeleteCompany}
       />
     </>
   )
