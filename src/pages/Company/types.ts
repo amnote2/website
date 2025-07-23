@@ -4,9 +4,21 @@ export interface CompanyInfo {
   taxCode: string;
   province: string;
   taxOfficeCode: string;
+  companyType: string;
+  accountingCompany: string;
+  accountingPeriod: string;
   phone?: string;
   email?: string;
-  businessSector?: string[];
+  directorName?: string;
+  businessRegistrationNumber?: string;
+  businessForm?: string;
+  businessType?: string;
+  fax?: string;
+  operationStartDate?: string;
+  positionVietnamese?: string;
+  positionEnglish?: string;
+  positionKorean?: string;
+  positionChinese?: string;
 }
 
 export interface AccountingSettings {

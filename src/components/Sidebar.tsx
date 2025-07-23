@@ -625,10 +625,10 @@ export default function Sidebar({
             <div className="p-4 border-t border-gray-200 flex-shrink-0">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm font-medium">NA</span>
+                  <span className="text-white text-sm font-medium">ML</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-gray-900 truncate">Nguyễn Văn A</div>
+                  <div className="text-sm font-medium text-gray-900 truncate">Nguyễn Mỹ Liên</div>
                   <div className="text-xs text-gray-500 truncate">Kế toán trưởng</div>
                 </div>
               </div>
@@ -716,10 +716,10 @@ export default function Sidebar({
       <div className="p-4 border-t border-gray-200 flex-shrink-0">
         <div className="flex items-center space-x-3">
           <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
-            <span className="text-white text-sm font-medium">NA</span>
+            <span className="text-white text-sm font-medium">ML</span>
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-sm font-medium text-gray-900 truncate">Nguyễn Văn A</div>
+            <div className="text-sm font-medium text-gray-900 truncate">Nguyễn Mỹ Liên</div>
             <div className="text-xs text-gray-500 truncate">Kế toán trưởng</div>
           </div>
         </div>

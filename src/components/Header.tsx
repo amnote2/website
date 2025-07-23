@@ -347,10 +347,10 @@ export default function Header({ onToggleSidebar, onLogout, onMenuSelect, curren
               onClick={toggleUserDropdown}
             >
               <div className="w-7 h-7 bg-red-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-xs font-medium">NL</span>
+                <span className="text-white text-xs font-medium">ML</span>
               </div>
               <div className="text-sm hidden sm:block">
-                <div className="font-medium text-gray-900">Nguyễn Thị Lan</div>
+                <div className="font-medium text-gray-900">Nguyễn Mỹ Liên</div>
                 <div className="text-xs text-gray-500">Kế toán trưởng</div>
               </div>
               <ChevronDown 
@@ -376,11 +376,11 @@ export default function Header({ onToggleSidebar, onLogout, onMenuSelect, curren
                   <div className="px-4 py-3 border-b border-gray-100">
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center">
-                        <span className="text-white text-sm font-medium">NL</span>
+                        <span className="text-white text-sm font-medium">ML</span>
                       </div>
                       <div>
-                        <div className="font-medium text-gray-900">Nguyễn Thị Lan</div>
-                        <div className="text-sm text-gray-500">nguyenlan@company.com</div>
+                        <div className="font-medium text-gray-900">Nguyễn Mỹ Liên</div>
+                        <div className="text-sm text-gray-500">007@amnote.com.vn</div>
                         <div className="text-xs text-gray-400">Kế toán trưởng</div>
                       </div>
                     </div>

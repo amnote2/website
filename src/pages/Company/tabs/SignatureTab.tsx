@@ -26,10 +26,20 @@ const SignatureTab: React.FC = () => {
   );
   // Để lưu ref input file cho từng dòng
   const fileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  // State cho validation errors
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
 
   // Xử lý đổi tên chức danh
   const handleNameChange = (idx: number, value: string) => {
     setSigners(prev => prev.map((s, i) => i === idx ? { ...s, name: value } : s));
+    // Clear error khi user bắt đầu nhập
+    if (errors[`signer_${idx}`]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[`signer_${idx}`];
+        return newErrors;
+      });
+    }
   };
   // Xử lý upload chữ ký/dấu
   const handleFileUpload = (idx: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +69,14 @@ const SignatureTab: React.FC = () => {
   // Bật/tắt sử dụng
   const handleToggleEnabled = (idx: number) => {
     setSigners(prev => prev.map((s, i) => i === idx ? { ...s, enabled: !s.enabled } : s));
+    // Clear error khi disable signer
+    if (errors[`signer_${idx}`]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[`signer_${idx}`];
+        return newErrors;
+      });
+    }
   };
 
   // 2 checkbox tuỳ chọn
@@ -68,7 +86,26 @@ const SignatureTab: React.FC = () => {
   // Submit
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form
+    const newErrors: {[key: string]: string} = {};
+    
+    signers.forEach((signer, idx) => {
+      if (signer.enabled && !signer.name.trim()) {
+        newErrors[`signer_${idx}`] = `Vui lòng nhập tên ${signer.label.toLowerCase()}`;
+      }
+    });
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    
+    // Clear errors if validation passes
+    setErrors({});
+    
     // Xử lý lưu dữ liệu signers và 2 tuỳ chọn
+    console.log('Saving signature data:', { signers, printAllReports, autoFillMaker });
     alert('Đã lưu thiết lập chữ ký!');
   };
 
@@ -81,19 +118,26 @@ const SignatureTab: React.FC = () => {
         </h2>
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Form nhập tên chức danh */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-            <h3 className="text-lg font-medium text-blue-800 mb-4">Chữ ký</h3>
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+            <h3 className="text-lg font-medium text-gray-800 mb-4">Chữ ký</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {signers.map((s, idx) => (
-                <div key={s.key} className="flex items-center gap-2">
-                  <label className="w-40 text-gray-700 text-sm font-medium">{s.label}</label>
-                  <input
-                    type="text"
-                    value={s.name}
-                    onChange={e => handleNameChange(idx, e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
-                    placeholder={`Nhập tên ${s.label.toLowerCase()}`}
-                  />
+                <div key={s.key} className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <label className="w-40 text-gray-700 text-sm font-medium">{s.label}</label>
+                    <input
+                      type="text"
+                      value={s.name}
+                      onChange={e => handleNameChange(idx, e.target.value)}
+                      className={`flex-1 px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
+                        errors[`signer_${idx}`] ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                      placeholder={`Nhập tên ${s.label.toLowerCase()}`}
+                    />
+                  </div>
+                  {errors[`signer_${idx}`] && (
+                    <p className="text-red-500 text-xs ml-40">{errors[`signer_${idx}`]}</p>
+                  )}
                 </div>
               ))}
             </div>
@@ -140,7 +184,7 @@ const SignatureTab: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => handleRemoveSignature(idx)}
-                            className="inline-flex items-center px-3 py-1 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200"
+                            className="inline-flex items-center px-3 py-1 text-sm bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200"
                           >
                             <Trash2 className="w-4 h-4 mr-1" />
                             Xóa
@@ -170,22 +214,22 @@ const SignatureTab: React.FC = () => {
           </div>
 
           {/* 2 checkbox tuỳ chọn */}
-          <div className="flex flex-col gap-2 mt-4">
-            <label className="inline-flex items-center text-sm text-gray-700">
+          <div className="flex flex-col gap-3 mt-4">
+            <label className="inline-flex items-center text-sm text-gray-700 cursor-pointer">
               <input
                 type="checkbox"
                 checked={printAllReports}
                 onChange={e => setPrintAllReports(e.target.checked)}
-                className="h-5 w-5 accent-blue-600 border-gray-300 rounded mr-2 focus:ring-blue-500"
+                className="h-4 w-4 accent-blue-600 border-gray-300 rounded mr-3 focus:ring-blue-500 focus:ring-2"
               />
               In trên tất cả báo cáo
             </label>
-            <label className="inline-flex items-center text-sm text-gray-700">
+            <label className="inline-flex items-center text-sm text-gray-700 cursor-pointer">
               <input
                 type="checkbox"
                 checked={autoFillMaker}
                 onChange={e => setAutoFillMaker(e.target.checked)}
-                className="h-5 w-5 accent-blue-600 border-gray-300 rounded mr-2 focus:ring-blue-500"
+                className="h-4 w-4 accent-blue-600 border-gray-300 rounded mr-3 focus:ring-blue-500 focus:ring-2"
               />
               Lấy tên người lập chứng từ theo tên người đăng nhập
             </label>

@@ -11,7 +11,19 @@ const CompanyInfoTab: React.FC = () => {
     taxOfficeCode: '',
     phone: '',
     email: '',
-    businessSector: [],
+    companyType: '',
+    accountingCompany: '',
+    accountingPeriod: '',
+    directorName: '',
+    businessRegistrationNumber: '',
+    businessForm: '',
+    businessType: '',
+    fax: '',
+    operationStartDate: '',
+    positionVietnamese: 'Giám đốc',
+    positionEnglish: 'Director',
+    positionKorean: '감독',
+    positionChinese: '董事',
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -25,25 +37,29 @@ const CompanyInfoTab: React.FC = () => {
     'Hà Nam', 'Hà Tĩnh', 'Hải Dương', 'Hậu Giang', 'Hòa Bình',
   ];
 
-  const businessSectors = [
-    'Nông, lâm nghiệp và thủy sản',
-    'Khai khoáng',
-    'Công nghiệp chế biến, chế tạo',
-    'Sản xuất và phân phối điện, khí đốt, nước nóng',
-    'Cung cấp nước; hoạt động quản lý và xử lý rác thải',
+  const businessForms = [
+    'Công ty trách nhiệm hữu hạn một thành viên',
+    'Công ty trách nhiệm hữu hạn hai thành viên trở lên',
+    'Công ty cổ phần',
+    'Công ty hợp danh',
+    'Doanh nghiệp tư nhân',
+    'Hợp tác xã',
+    'Liên hiệp hợp tác xã',
+  ];
+
+  const businessTypes = [
+    'Sản xuất',
+    'Thương mại',
+    'Dịch vụ',
+    'Vận tải',
     'Xây dựng',
-    'Bán buôn và bán lẻ; sửa chữa ô tô, mô tô',
-    'Vận tải, kho bãi',
-    'Dịch vụ lưu trú và ăn uống',
-    'Thông tin và truyền thông',
-    'Hoạt động tài chính, ngân hàng và bảo hiểm',
-    'Hoạt động kinh doanh bất động sản',
-    'Hoạt động chuyên môn, khoa học và công nghệ',
-    'Hoạt động hành chính và dịch vụ hỗ trợ',
-    'Giáo dục và đào tạo',
-    'Y tế và hoạt động trợ giúp xã hội',
-    'Nghệ thuật, vui chơi và giải trí',
-    'Hoạt động dịch vụ khác',
+    'Tài chính - Ngân hàng',
+    'Bất động sản',
+    'Công nghệ thông tin',
+    'Y tế',
+    'Giáo dục',
+    'Du lịch',
+    'Khác',
   ];
 
   const validateForm = (): boolean => {
@@ -65,6 +81,18 @@ const CompanyInfoTab: React.FC = () => {
 
     if (!formData.province) {
       newErrors.province = 'Vui lòng chọn tỉnh/thành phố';
+    }
+
+    if (!formData.companyType) {
+      newErrors.companyType = 'Vui lòng chọn loại công ty';
+    }
+
+    if (!formData.accountingCompany.trim()) {
+      newErrors.accountingCompany = 'Công ty kế toán phụ trách là bắt buộc';
+    }
+
+    if (!formData.accountingPeriod) {
+      newErrors.accountingPeriod = 'Vui lòng chọn kỳ kế toán';
     }
 
     if (!formData.taxOfficeCode.trim()) {
@@ -98,32 +126,44 @@ const CompanyInfoTab: React.FC = () => {
     }
   };
 
-  const handleSectorChange = (sector: string) => {
-    const currentSectors = formData.businessSector || [];
-    const updatedSectors = currentSectors.includes(sector)
-      ? currentSectors.filter(s => s !== sector)
-      : [...currentSectors, sector];
-    
-    handleInputChange('businessSector', updatedSectors);
-  };
-
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
       <div className="p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
-          <Building2 className="w-6 h-6 mr-2 text-red-600" />
+          <Building2 className="w-6 h-6 mr-2 text-blue-600" />
           Thông tin công ty
         </h2>
         
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Required Fields Section */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="text-lg font-medium text-blue-800 mb-4 flex items-center">
-              <AlertCircle className="w-5 h-5 mr-2 text-blue-600" />
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <h3 className="text-lg font-medium text-gray-800 mb-4 flex items-center">
+              <AlertCircle className="w-5 h-5 mr-2 text-red-600" />
               Thông tin bắt buộc
             </h3>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Company Type */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Loại công ty <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={formData.companyType}
+                  onChange={(e) => handleInputChange('companyType', e.target.value)}
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.companyType ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                >
+                  <option value="">Chọn loại công ty</option>
+                  <option value="company">Công ty</option>
+                  <option value="individual">Cá nhân</option>
+                </select>
+                {errors.companyType && (
+                  <p className="mt-1 text-sm text-red-600">{errors.companyType}</p>
+                )}
+              </div>
+
               {/* Company Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -133,7 +173,7 @@ const CompanyInfoTab: React.FC = () => {
                   type="text"
                   value={formData.companyName}
                   onChange={(e) => handleInputChange('companyName', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     errors.companyName ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="Nhập tên công ty"
@@ -144,7 +184,7 @@ const CompanyInfoTab: React.FC = () => {
               </div>
 
               {/* Tax Code */}
-              <div>
+              <div className="lg:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Mã số thuế <span className="text-red-500">*</span>
                 </label>
@@ -152,7 +192,7 @@ const CompanyInfoTab: React.FC = () => {
                   type="text"
                   value={formData.taxCode}
                   onChange={(e) => handleInputChange('taxCode', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     errors.taxCode ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="Nhập mã số thuế"
@@ -171,7 +211,7 @@ const CompanyInfoTab: React.FC = () => {
                   value={formData.address}
                   onChange={(e) => handleInputChange('address', e.target.value)}
                   rows={3}
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     errors.address ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="Nhập địa chỉ công ty"
@@ -189,7 +229,7 @@ const CompanyInfoTab: React.FC = () => {
                 <select
                   value={formData.province}
                   onChange={(e) => handleInputChange('province', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     errors.province ? 'border-red-500' : 'border-gray-300'
                   }`}
                 >
@@ -214,13 +254,56 @@ const CompanyInfoTab: React.FC = () => {
                   type="text"
                   value={formData.taxOfficeCode}
                   onChange={(e) => handleInputChange('taxOfficeCode', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     errors.taxOfficeCode ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="Nhập mã cơ quan thuế"
                 />
                 {errors.taxOfficeCode && (
                   <p className="mt-1 text-sm text-red-600">{errors.taxOfficeCode}</p>
+                )}
+              </div>
+
+              {/* Accounting Company */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Công ty kế toán phụ trách <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.accountingCompany}
+                  onChange={(e) => handleInputChange('accountingCompany', e.target.value)}
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.accountingCompany ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="Nhập tên công ty kế toán"
+                />
+                {errors.accountingCompany && (
+                  <p className="mt-1 text-sm text-red-600">{errors.accountingCompany}</p>
+                )}
+              </div>
+
+              {/* Accounting Period */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Kỳ kế toán <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={formData.accountingPeriod}
+                  onChange={(e) => handleInputChange('accountingPeriod', e.target.value)}
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.accountingPeriod ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                >
+                  <option value="">Chọn kỳ kế toán</option>
+                  <option value="2024">Năm 2024</option>
+                  <option value="2025">Năm 2025</option>
+                  <option value="2026">Năm 2026</option>
+                  <option value="2027">Năm 2027</option>
+                  <option value="2028">Năm 2028</option>
+                </select>
+                {errors.accountingPeriod && (
+                  <p className="mt-1 text-sm text-red-600">{errors.accountingPeriod}</p>
                 )}
               </div>
             </div>
@@ -231,6 +314,72 @@ const CompanyInfoTab: React.FC = () => {
             <h3 className="text-lg font-medium text-gray-800 mb-4">Thông tin bổ sung</h3>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Director Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Tên giám đốc
+                </label>
+                <input
+                  type="text"
+                  value={formData.directorName || ''}
+                  onChange={(e) => handleInputChange('directorName', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Nhập tên giám đốc"
+                />
+              </div>
+
+              {/* Business Registration Number */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Số đăng ký kinh doanh
+                </label>
+                <input
+                  type="text"
+                  value={formData.businessRegistrationNumber || ''}
+                  onChange={(e) => handleInputChange('businessRegistrationNumber', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Nhập số đăng ký kinh doanh"
+                />
+              </div>
+
+              {/* Business Form */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Hình thức kinh doanh
+                </label>
+                <select
+                  value={formData.businessForm || ''}
+                  onChange={(e) => handleInputChange('businessForm', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Chọn hình thức kinh doanh</option>
+                  {businessForms.map((form) => (
+                    <option key={form} value={form}>
+                      {form}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Business Type */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Loại hình kinh doanh
+                </label>
+                <select
+                  value={formData.businessType || ''}
+                  onChange={(e) => handleInputChange('businessType', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Chọn loại hình kinh doanh</option>
+                  {businessTypes.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               {/* Phone */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -240,7 +389,7 @@ const CompanyInfoTab: React.FC = () => {
                   type="tel"
                   value={formData.phone || ''}
                   onChange={(e) => handleInputChange('phone', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     errors.phone ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="Nhập số điện thoại"
@@ -259,7 +408,7 @@ const CompanyInfoTab: React.FC = () => {
                   type="email"
                   value={formData.email || ''}
                   onChange={(e) => handleInputChange('email', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                     errors.email ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="Nhập email công ty"
@@ -269,27 +418,87 @@ const CompanyInfoTab: React.FC = () => {
                 )}
               </div>
 
-              {/* Business Sector */}
-              <div className="lg:col-span-2">
+              {/* Fax */}
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Ngành nghề kinh doanh
+                  Fax
                 </label>
-                <div className="max-h-48 overflow-y-auto border border-gray-300 rounded-md p-3 bg-white">
-                  {businessSectors.map((sector) => (
-                    <div key={sector} className="flex items-center mb-2">
-                      <input
-                        type="checkbox"
-                        id={sector}
-                        checked={formData.businessSector?.includes(sector) || false}
-                        onChange={() => handleSectorChange(sector)}
-                        className="mr-3 h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
-                      />
-                      <label htmlFor={sector} className="text-sm text-gray-700">
-                        {sector}
-                      </label>
-                    </div>
-                  ))}
-                </div>
+                <input
+                  type="text"
+                  value={formData.fax || ''}
+                  onChange={(e) => handleInputChange('fax', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Nhập số fax"
+                />
+              </div>
+
+              {/* Operation Start Date */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Ngày bắt đầu hoạt động
+                </label>
+                <input
+                  type="date"
+                  value={formData.operationStartDate || ''}
+                  onChange={(e) => handleInputChange('operationStartDate', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              {/* Position Vietnamese */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Chức vụ (Tiếng Việt)
+                </label>
+                <input
+                  type="text"
+                  value={formData.positionVietnamese || ''}
+                  onChange={(e) => handleInputChange('positionVietnamese', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Nhập chức vụ bằng tiếng Việt"
+                />
+              </div>
+
+              {/* Position English */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Chức vụ (Tiếng Anh)
+                </label>
+                <input
+                  type="text"
+                  value={formData.positionEnglish || ''}
+                  onChange={(e) => handleInputChange('positionEnglish', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter position in English"
+                />
+              </div>
+
+              {/* Position Korean */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Chức vụ (Tiếng Hàn)
+                </label>
+                <input
+                  type="text"
+                  value={formData.positionKorean || ''}
+                  onChange={(e) => handleInputChange('positionKorean', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="한국어로 직책 입력"
+                />
+              </div>
+
+              {/* Position Chinese */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Chức vụ (Tiếng Trung)
+                </label>
+                <input
+                  type="text"
+                  value={formData.positionChinese || ''}
+                  onChange={(e) => handleInputChange('positionChinese', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="输入中文职位"
+                />
               </div>
             </div>
           </div>

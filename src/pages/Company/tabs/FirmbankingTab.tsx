@@ -160,15 +160,15 @@ const FirmbankingTab: React.FC = () => {
     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
       <div className="p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
-          <CreditCard className="w-6 h-6 mr-2 text-red-600" />
+          <CreditCard className="w-6 h-6 mr-2 text-blue-600" />
           Cài đặt Firmbanking
         </h2>
         
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Bank Accounts Management */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-blue-800">Quản lý tài khoản ngân hàng</h3>
+              <h3 className="text-lg font-medium text-gray-800">Quản lý tài khoản ngân hàng</h3>
               <button
                 type="button"
                 onClick={() => setShowAccountForm(true)}
@@ -230,7 +230,7 @@ const FirmbankingTab: React.FC = () => {
                       type="text"
                       value={newAccount.bankName}
                       onChange={(e) => setNewAccount(prev => ({ ...prev, bankName: e.target.value }))}
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                         errors.bankName ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="Nhập tên ngân hàng"
@@ -248,7 +248,7 @@ const FirmbankingTab: React.FC = () => {
                       type="text"
                       value={newAccount.accountNumber}
                       onChange={(e) => setNewAccount(prev => ({ ...prev, accountNumber: e.target.value }))}
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                         errors.accountNumber ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="Nhập số tài khoản"
@@ -266,7 +266,7 @@ const FirmbankingTab: React.FC = () => {
                       type="text"
                       value={newAccount.accountHolder}
                       onChange={(e) => setNewAccount(prev => ({ ...prev, accountHolder: e.target.value }))}
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                         errors.accountHolder ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="Nhập tên chủ tài khoản"
@@ -284,7 +284,7 @@ const FirmbankingTab: React.FC = () => {
                       type="text"
                       value={newAccount.branch}
                       onChange={(e) => setNewAccount(prev => ({ ...prev, branch: e.target.value }))}
-                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                         errors.branch ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="Nhập chi nhánh"
@@ -330,7 +330,7 @@ const FirmbankingTab: React.FC = () => {
                 type="email"
                 value={formData.otpEmail}
                 onChange={(e) => setFormData(prev => ({ ...prev, otpEmail: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Nhập email nhận OTP"
               />
             </div>
@@ -343,7 +343,7 @@ const FirmbankingTab: React.FC = () => {
                 type="tel"
                 value={formData.otpPhone}
                 onChange={(e) => setFormData(prev => ({ ...prev, otpPhone: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Nhập số điện thoại nhận OTP"
               />
             </div>
@@ -403,7 +403,7 @@ const FirmbankingTab: React.FC = () => {
                     <select
                       value={newQuestion.question}
                       onChange={(e) => setNewQuestion(prev => ({ ...prev, question: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="">Chọn câu hỏi</option>
                       {predefinedQuestions.map((question) => (
@@ -422,7 +422,7 @@ const FirmbankingTab: React.FC = () => {
                       type="text"
                       value={newQuestion.answer}
                       onChange={(e) => setNewQuestion(prev => ({ ...prev, answer: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Nhập câu trả lời"
                     />
                   </div>

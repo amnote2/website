@@ -36,11 +36,11 @@ interface UserProfile {
 const mockProfile: UserProfile = {
   id: '1',
   avatar: 'https://images.pexels.com/photos/3785079/pexels-photo-3785079.jpeg?auto=compress&cs=tinysrgb&w=400',
-  fullName: 'Nguyễn Thị Lan',
+  fullName: 'Nguyễn Mỹ Liên',
   dateOfBirth: '1990-05-15',
   gender: 'female',
   phone: '0123456789',
-  email: 'nguyenlan@company.com',
+  email: '007@amnote.com.vn',
   address: '123 Đường ABC, Quận Ba Đình, Hà Nội',
   postalCode: '100000',
   position: 'Kế toán trưởng',

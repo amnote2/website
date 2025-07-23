@@ -69,14 +69,14 @@ const AccountingSettingsTab: React.FC = () => {
     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
       <div className="p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
-          <Settings2 className="w-6 h-6 mr-2 text-red-600" />
+          <Settings2 className="w-6 h-6 mr-2 text-blue-600" />
           Thiết lập dữ liệu kế toán
         </h2>
         
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Quyết định/Thông tư */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="text-lg font-medium text-blue-800 mb-4">Dữ liệu báo cáo thuế</h3>
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <h3 className="text-lg font-medium text-gray-800 mb-4">Dữ liệu báo cáo thuế</h3>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -85,7 +85,7 @@ const AccountingSettingsTab: React.FC = () => {
                 <select
                   value={formData.cDecision}
                   onChange={e => handleInputChange('cDecision', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="">Chọn quyết định/thông tư</option>
                   <option value="c200">Quyết định 48/2006/QĐ-BTC (C200)</option>
@@ -105,7 +105,7 @@ const AccountingSettingsTab: React.FC = () => {
               <select
                 value={formData.pricingMethod}
                 onChange={(e) => handleInputChange('pricingMethod', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                   errors.pricingMethod ? 'border-red-500' : 'border-gray-300'
                 }`}
               >
@@ -129,7 +129,7 @@ const AccountingSettingsTab: React.FC = () => {
               <select
                 value={formData.taxMethod}
                 onChange={(e) => handleInputChange('taxMethod', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                   errors.taxMethod ? 'border-red-500' : 'border-gray-300'
                 }`}
               >
@@ -190,7 +190,7 @@ const AccountingSettingsTab: React.FC = () => {
                 max="4"
                 value={formData.decimalPlaces}
                 onChange={(e) => handleInputChange('decimalPlaces', parseInt(e.target.value))}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                   errors.decimalPlaces ? 'border-red-500' : 'border-gray-300'
                 }`}
                 placeholder="Nhập số thập phân (0-4)"
@@ -211,7 +211,7 @@ const AccountingSettingsTab: React.FC = () => {
                 id="allowNegativeInventory"
                 checked={formData.allowNegativeInventory}
                 onChange={(e) => handleInputChange('allowNegativeInventory', e.target.checked)}
-                className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
               <label htmlFor="allowNegativeInventory" className="ml-2 text-sm text-gray-700">
                 Cho phép xuất âm tồn kho
