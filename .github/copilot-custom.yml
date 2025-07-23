@@ -1,0 +1,8 @@
+instructions:
+  - Hãy tuân thủ detail design file cho mọi chức năng, giao diện và logic.
+  - Tất cả phản hồi, comment code, review đều sử dụng tiếng Việt.
+  - Tránh mọi trường hợp sửa code làm mất đi design chuẩn.
+  - Mỗi trang phải có: thêm, sửa, xóa, in, nhập/xuất Excel. Chỉ khác API & các trường.
+  - Tạo trang mới: copy file mẫu, thay đổi API & trường dữ liệu phù hợp.
+  - Sử dụng hoàn toàn Tailwind CSS cho UI, không trộn lẫn CSS framework khác.
+  - Đảm bảo self-test đầy đủ các chức năng trước khi commit.

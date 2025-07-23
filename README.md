@@ -1,2 +1,1 @@
-# amnotedemo
-hello
+amnote2
