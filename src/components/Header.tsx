@@ -396,9 +396,12 @@ export default function Header({ onToggleSidebar, onLogout, onMenuSelect, curren
                       Thông tin cá nhân
                     </button>
                     
-                    <button className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                    <button 
+                      onClick={() => navigate('/company')}
+                      className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
                       <Settings size={16} className="mr-3 text-gray-400" />
-                      Cài đặt tài khoản
+                      Chi tiết công ty
                     </button>
                     
                     <button 

@@ -15,6 +15,7 @@ import MaterialGroup from "./pages/MaterialGroup";
 import UnitManagementPage from "./pages/UnitManagement";
 import SummaryPage from "./pages/Summary";
 import CompanyManagementPage from "./pages/CompanyManagement";
+import CompanyManagement from "./pages/Company";
 
 
 function findMenuTitleById(menuId: string) {
@@ -178,6 +179,7 @@ function AppContent() {
             <Route path="/cost-center" element={<CostObjectPage />} />
 
             <Route path="/bank-management" element={<BankManagementPage />} />
+            <Route path="/company" element={<CompanyManagement />} />
             <Route path="/company-management" element={<CompanyManagementPage />} />
             <Route path="/profile" element={<ModuleContent moduleId="profile" />} />
             <Route path="/help-support" element={<ModuleContent moduleId="help-support" />} />
