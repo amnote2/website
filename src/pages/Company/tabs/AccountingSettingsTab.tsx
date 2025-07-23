@@ -4,7 +4,7 @@ import type { AccountingSettings, FormErrors } from '../types';
 
 const AccountingSettingsTab: React.FC = () => {
   const [formData, setFormData] = useState<AccountingSettings>({
-    hasC200Data: false,
+    cDecision: '', // 'c200' | 'c133'
     pricingMethod: '',
     taxMethod: '',
     closingMethod: '',
@@ -15,22 +15,16 @@ const AccountingSettingsTab: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
 
   const pricingMethods = [
-    { value: 'fifo', label: 'FIFO (First In, First Out)' },
-    { value: 'lifo', label: 'LIFO (Last In, First Out)' },
-    { value: 'average', label: 'Bình quân gia quyền' },
-    { value: 'specific', label: 'Giá thực tế đích danh' },
+    { value: 'bqtt', label: 'Bình quân tức thời' },
+    { value: 'fifo', label: 'Phương pháp nhập trước xuất trước' },
+    { value: 'bqck', label: 'Bình quân cuối kỳ' },
+    { value: 'specific', label: 'Thực tế đích danh' },
   ];
 
   const taxMethods = [
     { value: 'accrual', label: 'Phương pháp khấu trừ' },
     { value: 'direct', label: 'Phương pháp trực tiếp' },
     { value: 'hybrid', label: 'Phương pháp hỗn hợp' },
-  ];
-
-  const closingMethods = [
-    { value: 'monthly', label: 'Khóa sổ theo tháng' },
-    { value: 'quarterly', label: 'Khóa sổ theo quý' },
-    { value: 'yearly', label: 'Khóa sổ theo năm' },
   ];
 
   const validateForm = (): boolean => {
@@ -80,22 +74,22 @@ const AccountingSettingsTab: React.FC = () => {
         </h2>
         
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* C200 Data Setting */}
+          {/* Quyết định/Thông tư */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <h3 className="text-lg font-medium text-blue-800 mb-4">Dữ liệu báo cáo thuế</h3>
-            
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Dữ liệu C200/133
+                  Quyết định/thông tư <span className="text-red-500">*</span>
                 </label>
                 <select
-                  value={formData.hasC200Data ? 'yes' : 'no'}
-                  onChange={(e) => handleInputChange('hasC200Data', e.target.value === 'yes')}
+                  value={formData.cDecision}
+                  onChange={e => handleInputChange('cDecision', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 >
-                  <option value="no">Không</option>
-                  <option value="yes">Có</option>
+                  <option value="">Chọn quyết định/thông tư</option>
+                  <option value="c200">Quyết định 48/2006/QĐ-BTC (C200)</option>
+                  <option value="c133">Thông tư 133/2016/TT-BTC (C133)</option>
                 </select>
               </div>
             </div>
@@ -151,25 +145,35 @@ const AccountingSettingsTab: React.FC = () => {
               )}
             </div>
 
-            {/* Closing Method */}
+            {/* Closing Method - radio */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Phương pháp khóa sổ <span className="text-red-500">*</span>
               </label>
-              <select
-                value={formData.closingMethod}
-                onChange={(e) => handleInputChange('closingMethod', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
-                  errors.closingMethod ? 'border-red-500' : 'border-gray-300'
-                }`}
-              >
-                <option value="">Chọn phương pháp khóa sổ</option>
-                {closingMethods.map((method) => (
-                  <option key={method.value} value={method.value}>
-                    {method.label}
-                  </option>
-                ))}
-              </select>
+              <div className="flex gap-6 border border-gray-300 rounded px-3 py-2">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="closingMethod"
+                    value="basic"
+                    checked={formData.closingMethod === 'basic'}
+                    onChange={e => handleInputChange('closingMethod', e.target.value)}
+                    className="accent-blue-600"
+                  />
+                  Cơ bản
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="closingMethod"
+                    value="sequence"
+                    checked={formData.closingMethod === 'sequence'}
+                    onChange={e => handleInputChange('closingMethod', e.target.value)}
+                    className="accent-blue-600"
+                  />
+                  Trình tự
+                </label>
+              </div>
               {errors.closingMethod && (
                 <p className="mt-1 text-sm text-red-600">{errors.closingMethod}</p>
               )}

@@ -1,8 +1,8 @@
 "use client"
 
 import type { FormField } from "@/types/form"
-import React, { useState, useCallback, useEffect } from "react"
-import { X, Save, Loader2, AlertCircle, Info, Usb, FileText, Shield, Building2, Settings, CreditCard, FileSignature, Receipt, Check, Mail, MessageSquare, Key } from "lucide-react"
+import { useState, useEffect } from "react"
+import { X, Save, Usb, FileText, Shield, Building2, Settings, CreditCard, FileSignature, Receipt, Check } from "lucide-react"
 
 interface CompanyFormModalProps {
   isOpen: boolean
@@ -134,83 +134,97 @@ export default function CompanyFormModal({ isOpen, onClose, onSubmit, initialDat
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] mx-2 sm:mx-4 flex flex-col">
+      <div className="bg-white rounded-xl shadow-xl max-w-5xl w-full max-h-[95vh] overflow-hidden mx-2 sm:mx-4">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 sm:p-6 border-b flex-shrink-0">
-          <h2 className="text-xl font-semibold text-gray-900">
-            {mode === 'edit' ? 'Chỉnh sửa công ty' : 'Thêm mới công ty'}
-          </h2>
-          <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 transition-colors">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+              <Building2 className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">
+                {mode === 'edit' ? 'Chỉnh sửa công ty' : 'Thêm mới công ty'}
+              </h2>
+              <p className="text-sm text-gray-500">Cập nhật thông tin và cài đặt công ty</p>
+            </div>
+          </div>
+          <button 
+            onClick={closeModal} 
+            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+          >
             <X className="h-6 w-6" />
           </button>
         </div>
 
         {/* Tabs */}
-        <div className="border-b flex-shrink-0">
-          <nav className="flex space-x-2 sm:space-x-8 px-4 sm:px-6 overflow-x-auto">
-            <button
-              onClick={() => setActiveTab('info')}
-              className={`py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap transition-colors ${
-                activeTab === 'info' 
-                  ? 'border-blue-500 text-blue-600' 
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              <Building2 className="inline h-4 w-4 mr-1 sm:mr-2" />
-              Thông tin công ty
-            </button>
-            <button
-              onClick={() => setActiveTab('accounting')}
-              className={`py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap transition-colors ${
-                activeTab === 'accounting' 
-                  ? 'border-blue-500 text-blue-600' 
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              <Settings className="inline h-4 w-4 mr-1 sm:mr-2" />
-              Thiết lập kế toán
-            </button>
-            <button
-              onClick={() => setActiveTab('firmbanking')}
-              className={`py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap transition-colors ${
-                activeTab === 'firmbanking' 
-                  ? 'border-blue-500 text-blue-600' 
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              <CreditCard className="inline h-4 w-4 mr-1 sm:mr-2" />
-              Firmbanking
-            </button>
-            <button
-              onClick={() => setActiveTab('signature')}
-              className={`py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap transition-colors ${
-                activeTab === 'signature' 
-                  ? 'border-blue-500 text-blue-600' 
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              <FileSignature className="inline h-4 w-4 mr-1 sm:mr-2" />
-              Chữ ký
-            </button>
-            <button
-              onClick={() => setActiveTab('invoice')}
-              className={`py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap transition-colors ${
-                activeTab === 'invoice' 
-                  ? 'border-blue-500 text-blue-600' 
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              <Receipt className="inline h-4 w-4 mr-1 sm:mr-2" />
-              Hóa đơn
-            </button>
-          </nav>
+        <div className="border-b bg-white">
+          <div className="px-4 sm:px-6">
+            <nav className="flex space-x-8 overflow-x-auto scrollbar-hide">
+              <button
+                onClick={() => setActiveTab('info')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-all duration-200 flex items-center space-x-2 ${
+                  activeTab === 'info' 
+                    ? 'border-blue-500 text-blue-600' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <Building2 className="w-4 h-4" />
+                <span>Thông tin công ty</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('accounting')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-all duration-200 flex items-center space-x-2 ${
+                  activeTab === 'accounting' 
+                    ? 'border-blue-500 text-blue-600' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <Settings className="w-4 h-4" />
+                <span>Thiết lập kế toán</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('firmbanking')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-all duration-200 flex items-center space-x-2 ${
+                  activeTab === 'firmbanking' 
+                    ? 'border-blue-500 text-blue-600' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <CreditCard className="w-4 h-4" />
+                <span>Firmbanking</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('signature')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-all duration-200 flex items-center space-x-2 ${
+                  activeTab === 'signature' 
+                    ? 'border-blue-500 text-blue-600' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <FileSignature className="w-4 h-4" />
+                <span>Chữ ký</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('invoice')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-all duration-200 flex items-center space-x-2 ${
+                  activeTab === 'invoice' 
+                    ? 'border-blue-500 text-blue-600' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <Receipt className="w-4 h-4" />
+                <span>Hóa đơn</span>
+              </button>
+            </nav>
+          </div>
         </div>
 
-        {/* Content Area - Scrollable */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
-          {/* Tab Thông tin công ty */}
-          {activeTab === 'info' && (
-            <div className="space-y-6">
+        {/* Content */}
+        <div className="flex-1 overflow-hidden">
+          <div className="h-[calc(95vh-180px)] overflow-y-auto p-4 sm:p-6 bg-gray-50">
+            {/* Tab Thông tin công ty */}
+            {activeTab === 'info' && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -325,13 +339,77 @@ export default function CompanyFormModal({ isOpen, onClose, onSubmit, initialDat
                   ))}
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Tab Thiết lập kế toán */}
           {activeTab === 'accounting' && (
-            <div className="bg-blue-50 rounded-xl border p-4 space-y-6">
-              <div className="font-semibold text-blue-800 text-base mb-4">Dữ liệu báo cáo thuế</div>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 border-b">
+                <h3 className="text-lg font-semibold text-blue-800 flex items-center space-x-2">
+                  <Settings className="w-5 h-5" />
+                  <span>Dữ liệu báo cáo thuế</span>
+                </h3>
+              </div>
+              <div className="p-6 space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <span className="text-red-500">*</span> Mã số thuế
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.taxCode}
+                        onChange={(e) => setFormData({...formData, taxCode: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Loại hình doanh nghiệp
+                      </label>
+                      <select
+                        value={formData.businessType}
+                        onChange={(e) => setFormData({...formData, businessType: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        <option value="limited">Công ty TNHH</option>
+                        <option value="joint-stock">Công ty cổ phần</option>
+                        <option value="private">Doanh nghiệp tư nhân</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Chi cục thuế quản lý
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.taxDepartment}
+                        onChange={(e) => setFormData({...formData, taxDepartment: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Phương pháp kế toán
+                      </label>
+                      <select
+                        value={formData.accountingMethod}
+                        onChange={(e) => setFormData({...formData, accountingMethod: e.target.value})}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        <option value="accrual">Dồn tích</option>
+                        <option value="cash">Tiền mặt</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
               {/* Quyết định/thông tư */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Quyết định/thông tư <span className="text-red-500">*</span></label>
@@ -506,9 +584,8 @@ export default function CompanyFormModal({ isOpen, onClose, onSubmit, initialDat
           {/* Tab Firmbanking */}
           {activeTab === 'firmbanking' && (
             <div className="space-y-6">
-              {/* Box Quản lý tài khoản ngân hàng */}
-              <div className="bg-blue-50 rounded-xl border p-4">
-                {/* Header */}
+              {/* Header và Danh sách tài khoản ngân hàng */}
+              <div className="bg-blue-50 rounded-xl p-4 border">
                 <div className="flex flex-col sm:flex-row items-center justify-between mb-4">
                   <div className="font-semibold text-blue-800 text-base mb-2 sm:mb-0">Quản lý tài khoản ngân hàng</div>
                   <button 
@@ -976,100 +1053,37 @@ export default function CompanyFormModal({ isOpen, onClose, onSubmit, initialDat
                     ].map(({ key, label }) => (
                       <tr key={key} className="border-t border-gray-100">
                         <td className="px-4 py-2 text-sm text-gray-700">{label}</td>
-                        <td className="px-4 py-2">
-                          <div className="flex items-center gap-3">
-                            {formData.settings?.signature?.[`${key}SignUrl`] ? (
-                              <>
-                                <img 
-                                  src={formData.settings.signature[`${key}SignUrl`]} 
-                                  alt="Chữ ký" 
-                                  className="h-12 w-auto border rounded shadow-sm" 
-                                />
-                                <div className="flex gap-2">
-                                  <label className="inline-flex items-center cursor-pointer">
-                                    <input 
-                                      type="file" 
-                                      accept="image/*" 
-                                      className="hidden" 
-                                      onChange={e => {
-                                        const file = e.target.files?.[0];
-                                        if (file) {
-                                          const reader = new FileReader();
-                                          reader.onload = ev => {
-                                            setFormData({
-                                              ...formData,
-                                              settings: {
-                                                ...formData.settings!,
-                                                signature: {
-                                                  ...formData.settings?.signature,
-                                                  [`${key}SignUrl`]: ev.target?.result
-                                                }
-                                              }
-                                            });
-                                          };
-                                          reader.readAsDataURL(file);
-                                        }
-                                      }} 
-                                    />
-                                    <span className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs font-medium">
-                                      Thay đổi
-                                    </span>
-                                  </label>
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      setFormData({
-                                        ...formData,
-                                        settings: {
-                                          ...formData.settings!,
-                                          signature: {
-                                            ...formData.settings?.signature,
-                                            [`${key}SignUrl`]: undefined
-                                          }
-                                        }
-                                      });
-                                    }}
-                                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-xs font-medium"
-                                  >
-                                    Xóa
-                                  </button>
-                                </div>
-                              </>
-                            ) : (
-                              <div className="flex items-center gap-3">
-                                <span className="text-gray-400 text-sm italic">Chưa có</span>
-                                <label className="inline-flex items-center cursor-pointer">
-                                  <input 
-                                    type="file" 
-                                    accept="image/*" 
-                                    className="hidden" 
-                                    onChange={e => {
-                                      const file = e.target.files?.[0];
-                                      if (file) {
-                                        const reader = new FileReader();
-                                        reader.onload = ev => {
-                                          setFormData({
-                                            ...formData,
-                                            settings: {
-                                              ...formData.settings!,
-                                              signature: {
-                                                ...formData.settings?.signature,
-                                                [`${key}SignUrl`]: ev.target?.result
-                                              }
-                                            }
-                                          });
-                                        };
-                                        reader.readAsDataURL(file);
+                        <td className="px-4 py-2 flex items-center gap-2">
+                          {formData.settings?.signature?.[`${key}SignUrl`] ? (
+                            <span className="text-green-600 text-xs">Đã có</span>
+                          ) : (
+                            <span className="text-gray-400 text-xs italic">Chưa có</span>
+                          )}
+                          <label className="inline-flex items-center cursor-pointer">
+                            <input type="file" accept="image/*" className="hidden" onChange={e => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                const reader = new FileReader();
+                                reader.onload = ev => {
+                                  setFormData({
+                                    ...formData,
+                                    settings: {
+                                      ...formData.settings!,
+                                      signature: {
+                                        ...formData.settings?.signature,
+                                        [`${key}SignUrl`]: ev.target?.result
                                       }
-                                    }} 
-                                  />
-                                  <span className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs font-medium">
-                                    Upload
-                                  </span>
-                                </label>
-                              </div>
-                            )}
-                          </div>
+                                    }
+                                  });
+                                };
+                                reader.readAsDataURL(file);
+                              }
+                            }} />
+                            <span className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs font-medium ml-2">Upload</span>
+                          </label>
+                          {formData.settings?.signature?.[`${key}SignUrl`] && (
+                            <img src={formData.settings.signature[`${key}SignUrl`]} alt="Chữ ký" className="h-8 ml-2 border rounded shadow" />
+                          )}
                         </td>
                         <td className="px-4 py-2 text-center">
                           <input type="checkbox" checked={formData.settings?.signature?.[`${key}Enabled`] ?? true} onChange={e => setFormData({
@@ -1145,8 +1159,7 @@ export default function CompanyFormModal({ isOpen, onClose, onSubmit, initialDat
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                   >
-                    <Mail className="inline h-4 w-4 mr-2" />
-                    Thiết lập email gửi hóa đơn
+                    📧 Thiết lập email gửi hóa đơn
                   </button>
                   <button
                     onClick={() => setActiveInvoiceTab('sms')}
@@ -1156,8 +1169,7 @@ export default function CompanyFormModal({ isOpen, onClose, onSubmit, initialDat
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                   >
-                    <MessageSquare className="inline h-4 w-4 mr-2" />
-                    Thiết lập SMS gửi hóa đơn
+                    📱 Thiết lập SMS gửi hóa đơn
                   </button>
                   <button
                     onClick={() => setActiveInvoiceTab('digital-signature')}
@@ -1167,8 +1179,7 @@ export default function CompanyFormModal({ isOpen, onClose, onSubmit, initialDat
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     }`}
                   >
-                    <Key className="inline h-4 w-4 mr-2" />
-                    Thiết lập chữ ký số
+                    🔐 Thiết lập chữ ký số
                   </button>
                 </nav>
               </div>
@@ -1602,8 +1613,7 @@ export default function CompanyFormModal({ isOpen, onClose, onSubmit, initialDat
           )}
         </div>
 
-        {/* Footer - Always Visible */}
-        <div className="flex flex-col sm:flex-row items-center justify-end space-y-3 sm:space-y-0 sm:space-x-4 p-4 sm:p-6 border-t bg-gray-50 flex-shrink-0">
+        <div className="flex flex-col sm:flex-row items-center justify-end space-y-3 sm:space-y-0 sm:space-x-4 p-4 sm:p-6 border-t bg-gray-50">
           <button
             onClick={closeModal}
             className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"

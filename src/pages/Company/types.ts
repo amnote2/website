@@ -10,7 +10,7 @@ export interface CompanyInfo {
 }
 
 export interface AccountingSettings {
-  hasC200Data: boolean;
+  cDecision: string; // 'c200' | 'c133'
   pricingMethod: string;
   taxMethod: string;
   closingMethod: string;
