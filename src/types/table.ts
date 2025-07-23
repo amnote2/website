@@ -43,4 +43,5 @@ export interface TablePageProps<T extends BaseTableItem> {
   formConfig?: import("@/types/form").FormConfig
   deleteConfig?: import("@/types/form").DeleteConfig
   bulkDeleteConfig?: import("@/types/form").DeleteConfig
+  FormModalComponent?: React.ComponentType<any>
 }

@@ -7,6 +7,7 @@ import { customerColumns } from "./customerConfig";
 import { customerFormConfig, customerDeleteConfig, customerBulkDeleteConfig } from "./customerFormConfig";
 import { customerPrintConfig } from "./customerPrintConfig";
 import { customerImportConfig } from "./customerImportConfig"
+import CustomerFormModal from "./CustomerFormModal"
 import { exportToExcel } from "@/lib/excelUtils";
 import type { Customer } from "@/types/customer"; // Import the new Customer interface
 import { login } from "@/lib/login"; // Import hàm login
@@ -255,6 +256,7 @@ export default function CustomerManagementPage() {
       formConfig={customerFormConfig}
       deleteConfig={customerDeleteConfig}
       bulkDeleteConfig={customerBulkDeleteConfig}
+      FormModalComponent={CustomerFormModal}
       onDelete={handleDelete}
     />
   );
