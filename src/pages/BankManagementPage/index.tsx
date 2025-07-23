@@ -7,7 +7,6 @@ import { bankImportConfig } from "./bankImportConfig"
 import { bankPrintConfig } from "./bankPrintConfig"
 // Add imports for the new form configs
 import { bankFormConfig, bankDeleteConfig, bankBulkDeleteConfig } from "./bankFormConfig"
-import BankFormModal from "./BankFormModal"
 import { exportToExcel } from "@/lib/excelUtils" // Import the new utility function
 
 interface BankAccount {
@@ -144,7 +143,6 @@ export default function BankManagementPage() {
       formConfig={bankFormConfig}
       deleteConfig={bankDeleteConfig}
       bulkDeleteConfig={bankBulkDeleteConfig}
-      FormModalComponent={BankFormModal}
     />
   )
 }

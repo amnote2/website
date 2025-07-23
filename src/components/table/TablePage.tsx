@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useMemo, useEffect } from "react"
+import { useState, useCallback, useEffect } from "react"
 import * as Icons from "lucide-react"
 import { useTableState } from "@/hooks/useTableState"
 import { TableToolbar } from "./TableToolbar"
@@ -9,21 +9,12 @@ import { TableSettings } from "./TableSettings"
 import Pagination from "@/components/table/Pagination"
 import ExcelImportModal from "@/components/modals/ExcelImportModal"
 import PrintModal from "@/components/modals/PrintModal"
-import FormModal from "@/components/forms/FormModal"
 import DeleteModal from "@/components/modals/DeleteModal"
 import { Toast } from "@/components/ui/toast" // Import the new Toast component
 // Remove hardcoded customer delete API. Use onDelete prop instead.
 import type { TablePageProps, BaseTableItem } from "@/types/table"
 import type { ExcelImportConfig, PrintConfig } from "@/types/modal"
 import type { FormConfig, DeleteConfig } from "@/types/form"
-
-// Interface chuẩn, nhận thêm prop FormModalComponent
-export interface TablePagePropsWithConfigs<T extends BaseTableItem> extends TablePageProps<T> {
-  /**
-   * Component modal nhận từ ngoài (index page), ví dụ: FormModal hoặc CompanyFormModal
-   */
-  FormModalComponent?: React.ComponentType<any>;
-}
 
 export function TablePage<T extends BaseTableItem>({
   title,
@@ -47,8 +38,7 @@ export function TablePage<T extends BaseTableItem>({
   bulkDeleteConfig,
   isInitialLoading = false, // Default to false
   onDelete,
-  FormModalComponent,
-}: TablePagePropsWithConfigs<T>) {
+}: TablePageProps<T>) {
   const localStorageKey = `${title.replace(/\s+/g, "")}TableColumnConfigs`
 
   // Internal state for data, managed by TablePage
@@ -120,6 +110,7 @@ export function TablePage<T extends BaseTableItem>({
   // Toast state for undo
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState("")
+  const [FormModalComponent, setFormModalComponent] = useState<React.ComponentType<any> | null>(null)
 
   const { totalPages, startIndex, endIndex, displayed } = paginationData
 
@@ -157,32 +148,6 @@ export function TablePage<T extends BaseTableItem>({
     return "mục không tên"
   }, [])
 
-  // Prepare form config with dynamic options (for parent selection in tree view)
-  // Chuẩn bị config cho FormModal, giữ nguyên cấu trúc tabs nếu có
-  const preparedFormConfig = useMemo(() => {
-    if (!formConfig) return undefined
-    // Nếu có tree view và parentField, cập nhật options cho field cha (chỉ khi không dùng tabs)
-    if (enableTreeView && parentField && formConfig.fields) {
-      const config = { ...formConfig }
-      const parentFieldConfig = config.fields.find((field: any) => field.name === parentField)
-      if (parentFieldConfig && parentFieldConfig.type === "select") {
-        const parentOptions = [
-          { value: "0", label: "Không có cha (đối tượng gốc)" },
-          ...tableData
-            .filter((item) => item.id !== editingItem?.id)
-            .map((item) => ({
-              value: item.id,
-              label: `${(item as any).code} - ${(item as any).nameVi || (item as any).name || item.id}`,
-            })),
-        ]
-        parentFieldConfig.options = parentOptions
-      }
-      return config
-    }
-    // Nếu là dạng tabs thì trả về nguyên vẹn
-    return formConfig
-  }, [formConfig, tableData, enableTreeView, parentField, editingItem])
-
   const handleRefreshData = useCallback(async () => {
     setIsRefreshing(true)
     try {
@@ -212,7 +177,7 @@ export function TablePage<T extends BaseTableItem>({
 
   // Form handlers
   const handleAddClick = useCallback(() => {
-    if (formConfig) {
+    if (FormModalComponent) {
       setFormMode("add")
       setEditingItem(null)
       setIsFormModalOpen(true)
@@ -221,13 +186,13 @@ export function TablePage<T extends BaseTableItem>({
 
   const handleEditClick = useCallback(
     (item: T) => {
-      if (formConfig) {
+      if (FormModalComponent) {
         setFormMode("edit")
         setEditingItem(item)
         setIsFormModalOpen(true)
       }
     },
-    [formConfig],
+    [FormModalComponent],
   )
 
   const handleDeleteClick = useCallback(
@@ -363,6 +328,37 @@ export function TablePage<T extends BaseTableItem>({
     setToastMessage("")
   }, [])
 
+  // Dynamic form modal loading
+  useEffect(() => {
+    const loadFormModal = async () => {
+      try {
+        // Determine which form modal to load based on title or other criteria
+        let modalPath = ""
+        
+        if (title.includes("khách hàng")) {
+          modalPath = "../CustomerManagementPage/CustomerFormModal"
+        } else if (title.includes("ngân hàng")) {
+          modalPath = "../BankManagementPage/BankFormModal"
+        } else if (title.includes("công ty")) {
+          modalPath = "../CompanyManagement/CompanyFormModal"
+        } else if (title.includes("đối tượng tập hợp chi phí")) {
+          modalPath = "../CostCenter/CostCenterFormModal"
+        }
+        
+        if (modalPath) {
+          const module = await import(modalPath)
+          setFormModalComponent(() => module.default)
+        }
+      } catch (error) {
+        console.error("Failed to load form modal:", error)
+      }
+    }
+
+    if (formConfig) {
+      loadFormModal()
+    }
+  }, [title, formConfig])
+
   return (
     <div className="space-y-0">
       {/* HEADER & ACTIONS */}
@@ -395,7 +391,7 @@ export function TablePage<T extends BaseTableItem>({
             </button>
           )}
 
-          {formConfig && ( // Logic gọi API cho thêm mới/chỉnh sửa nên được xử lý ở hàm `onAdd` hoặc `onEdit` được truyền từ component cha (ví dụ: `app/customer/page.tsx`)
+          {FormModalComponent && ( // Logic gọi API cho thêm mới/chỉnh sửa nên được xử lý ở hàm `onAdd` hoặc `onEdit` được truyền từ component cha (ví dụ: `app/customer/page.tsx`)
             <button
               onClick={handleAddClick}
               className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center space-x-2 hover:bg-blue-700"
@@ -507,26 +503,14 @@ export function TablePage<T extends BaseTableItem>({
         />
       )}
 
-      {/* Render FormModalComponent nếu được truyền từ ngoài */}
+      {/* Render FormModalComponent được load động */}
       {FormModalComponent && isFormModalOpen && (
         <FormModalComponent
           isOpen={isFormModalOpen}
           onClose={() => setIsFormModalOpen(false)}
           onSubmit={handleFormSubmit}
           initialData={editingItem || {}}
-          mode={formMode}
-        />
-      )}
-
-      {/* Fallback to generic FormModal nếu không có FormModalComponent */}
-      {!FormModalComponent && preparedFormConfig && (
-        <FormModal
-          isOpen={isFormModalOpen}
-          onClose={() => setIsFormModalOpen(false)}
-          onSubmit={handleFormSubmit} // This will now call onAdd/onEdit from parent
-          config={preparedFormConfig}
-          initialData={editingItem || {}}
-          existingData={tableData} // Pass tableData for validation
+          existingData={tableData}
           mode={formMode}
         />
       )}

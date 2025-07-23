@@ -4,7 +4,6 @@ import { useState, useCallback } from "react"
 
 import { TablePage } from "@/components/table/TablePage"
 import { companyColumns } from "./companyConfig"
-import CompanyFormModal from "./CompanyFormModal"
 import { companyFormConfig, companyDeleteConfig, companyBulkDeleteConfig } from "./companyFormConfig"
 import { exportToExcel } from "@/lib/excelUtils"
 
@@ -114,7 +113,6 @@ export default function CompanyManagementPage() {
       formConfig={companyFormConfig}
       deleteConfig={companyDeleteConfig}
       bulkDeleteConfig={companyBulkDeleteConfig}
-      FormModalComponent={CompanyFormModal}
       onAdd={handleAddCompany}
       onEdit={handleEditCompany}
     />
