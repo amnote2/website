@@ -9,7 +9,7 @@ import { TableSettings } from "./TableSettings"
 import Pagination from "@/components/table/Pagination"
 import ExcelImportModal from "@/components/modals/ExcelImportModal"
 import PrintModal from "@/components/modals/PrintModal"
-import FormModal from "@/components/forms/FormModal"
+import CompanyFormModal from "../CompanyFormModal"
 import DeleteModal from "@/components/modals/DeleteModal"
 import { Toast } from "@/components/ui/toast" // Import the new Toast component
 // Remove hardcoded customer delete API. Use onDelete prop instead.
@@ -17,8 +17,12 @@ import type { TablePageProps, BaseTableItem } from "@/types/table"
 import type { ExcelImportConfig, PrintConfig } from "@/types/modal"
 import type { FormConfig, DeleteConfig } from "@/types/form"
 
-// Update the interface to include the new config props
+// Interface chuẩn, nhận thêm prop FormModalComponent
 export interface TablePagePropsWithConfigs<T extends BaseTableItem> extends TablePageProps<T> {
+  /**
+   * Component modal nhận từ ngoài (index page), ví dụ: FormModal hoặc CompanyFormModal
+   */
+  FormModalComponent?: React.ComponentType<any>;
 }
 
 export function TablePage<T extends BaseTableItem>({
@@ -43,6 +47,7 @@ export function TablePage<T extends BaseTableItem>({
   bulkDeleteConfig,
   isInitialLoading = false, // Default to false
   onDelete,
+  FormModalComponent,
 }: TablePagePropsWithConfigs<T>) {
   const localStorageKey = `${title.replace(/\s+/g, "")}TableColumnConfigs`
 
@@ -502,14 +507,13 @@ export function TablePage<T extends BaseTableItem>({
         />
       )}
 
-      {preparedFormConfig && (
-        <FormModal
+      {/* Render FormModalComponent nếu được truyền từ ngoài */}
+      {FormModalComponent && isFormModalOpen && (
+        <FormModalComponent
           isOpen={isFormModalOpen}
           onClose={() => setIsFormModalOpen(false)}
-          onSubmit={handleFormSubmit} // This will now call onAdd/onEdit from parent
-          config={preparedFormConfig}
+          onSubmit={handleFormSubmit}
           initialData={editingItem || {}}
-          existingData={tableData} // Pass tableData for validation
           mode={formMode}
         />
       )}

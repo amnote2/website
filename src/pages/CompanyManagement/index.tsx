@@ -2,8 +2,9 @@
 
 import { useState, useCallback } from "react"
 
-import { TablePage } from "@/components/table/TablePage"
+import { TablePage } from "./table/TablePage"
 import { companyColumns } from "./companyConfig"
+import CompanyFormModal from "./CompanyFormModal"
 import { companyFormConfig, companyDeleteConfig, companyBulkDeleteConfig } from "./companyFormConfig"
 import { exportToExcel } from "@/lib/excelUtils"
 
@@ -95,26 +96,29 @@ export default function CompanyManagementPage() {
   }, [data])
 
   return (
-    <TablePage
-      title="Quản lý công ty/doanh nghiệp"
-      description="Quản lý danh sách công ty/doanh nghiệp"
-      columns={companyColumns}
-      data={data}
-      onImport={handleImport}
-      onPrint={handlePrint}
-      onRefresh={handleRefresh}
-      onExport={handleExport}
-      searchFields={["name", "address", "taxCode", "province", "taxOfficeCode", "phone", "email", "industry"]}
-      companyInfo={{
-        name: "Công ty TNHH ABC Technology",
-        address: "123 Đường ABC, Quận Ba Đình, Hà Nội",
-        taxCode: "0123456789",
-      }}
-      formConfig={companyFormConfig}
-      deleteConfig={companyDeleteConfig}
-      bulkDeleteConfig={companyBulkDeleteConfig}
-      onAdd={handleAddCompany}
-      onEdit={handleEditCompany}
-    />
+    <>
+      <TablePage
+        title="Quản lý công ty/doanh nghiệp"
+        description="Quản lý danh sách công ty/doanh nghiệp"
+        columns={companyColumns}
+        data={data}
+        onImport={handleImport}
+        onPrint={handlePrint}
+        onRefresh={handleRefresh}
+        onExport={handleExport}
+        searchFields={["name", "address", "taxCode", "province", "taxOfficeCode", "phone", "email", "industry"]}
+        companyInfo={{
+          name: "Công ty TNHH ABC Technology",
+          address: "123 Đường ABC, Quận Ba Đình, Hà Nội",
+          taxCode: "0123456789",
+        }}
+        formConfig={companyFormConfig}
+        deleteConfig={companyDeleteConfig}
+        bulkDeleteConfig={companyBulkDeleteConfig}
+        FormModalComponent={CompanyFormModal}
+        onAdd={handleAddCompany}
+        onEdit={handleEditCompany}
+      />
+    </>
   )
 }
