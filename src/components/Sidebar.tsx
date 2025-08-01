@@ -328,7 +328,9 @@ function SidebarMenuNode({
         <button
           onClick={() => onMenuSelect(node.id)}
           className={[
-            'relative z-10 w-full flex items-center justify-between px-3 py-2.5 text-left rounded-lg transition-all duration-200',
+            'relative z-10 w-full flex items-center justify-between px-3',
+            level > 0 ? 'py-1.5' : 'py-2.5',
+            'text-left rounded-lg transition-all duration-200',
             level === 0 && isActive && !isSearching
               ? 'bg-red-600 text-white font-bold'
               : isActive && !isSearching
@@ -354,23 +356,22 @@ function SidebarMenuNode({
               )}</>
             </span>
           </div>
-          {hasChildren && !isSearching && (
-            <span
-              className={`transition-transform duration-200 cursor-pointer ${isExpanded ? 'rotate-180' : ''}`}
-              onClick={handleToggle}
-            >
-              <ChevronDown size={14} className={level === 0 && isActive && !isSearching ? 'text-white' : 'text-gray-400 hover:text-red-400'} />
-            </span>
-          )}
-          {hasChildren && isSearching && (
-            <span
-              className={`transition-transform duration-200 cursor-pointer ${isExpanded ? 'rotate-180' : ''}`}
-              onClick={handleToggle}
-            >
-              <ChevronDown size={14} className="text-gray-400 hover:text-red-400" />
-            </span>
-          )}
         </button>
+        {hasChildren && (
+          <button
+            onClick={handleToggle}
+            className={`absolute right-3 top-1/2 transform -translate-y-1/2 p-1 rounded transition-all duration-200 z-20 ${
+              level === 0 && isActive && !isSearching 
+                ? 'text-white hover:bg-white hover:bg-opacity-20' 
+                : 'text-gray-400 hover:text-red-400 hover:bg-gray-100'
+            }`}
+          >
+            <ChevronDown 
+              size={14} 
+              className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+            />
+          </button>
+        )}
       </div>
       {hasChildren && isExpanded && (
         <div className="relative">
@@ -419,11 +420,19 @@ export default function Sidebar({
 
   const handleMenuSelect = (menuId: string) => {
     const path = findPathToNode(menuGroups.flatMap(g => g.items), menuId);
-    if (path) setExpandedPath(path);
-    onMenuSelect(menuId);
-    // Nếu đang search, cập nhật lại trạng thái activeMenu tạm thời
-    if (searchTerm && !originalMenuState) {
-      setOriginalMenuState({ expandedPath, activeMenu });
+    if (path) {
+      // Nếu menuId hợp lệ (có trên sidebar), chỉ set expandedPath và activeMenu, KHÔNG đóng menu
+      setExpandedPath(path);
+      onMenuSelect(menuId);
+      // Nếu đang search, cập nhật lại trạng thái activeMenu tạm thời
+      if (searchTerm && !originalMenuState) {
+        setOriginalMenuState({ expandedPath, activeMenu });
+      }
+    } else {
+      // Nếu menuId không tồn tại trên sidebar (ví dụ /profile), chỉ đóng menu khi load hoặc chuyển route ngoài sidebar
+      // Để tránh đóng menu khi click vào menu sidebar hợp lệ
+      // Không gọi setExpandedPath([]) ở đây khi click menu sidebar
+      onMenuSelect("");
     }
   };
 
@@ -520,7 +529,7 @@ export default function Sidebar({
         >
           <div className="p-3 border-b border-gray-200 flex-shrink-0">
             <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">A</span>
+              <span className="text-white font-bold text-sm">AM</span>
             </div>
           </div>
           <nav className="flex-1 overflow-y-auto p-2">
@@ -574,7 +583,7 @@ export default function Sidebar({
             <div className="p-4 border-b border-gray-200 flex-shrink-0">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">A</span>
+                  <span className="text-white font-bold text-sm">AM</span>
                 </div>
                 <div>
                   <h1 className="text-lg font-bold text-gray-900">AMnote</h1>
@@ -591,8 +600,21 @@ export default function Sidebar({
                   placeholder="Tìm kiếm menu..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full pl-9 pr-9 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent focus:border-red-500 hover:border-gray-300 active:border-gray-300 outline-none"
                 />
+                {searchTerm && (
+                  <button
+                    type="button"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 focus:outline-none"
+                    onClick={() => setSearchTerm("")}
+                    tabIndex={-1}
+                    aria-label="Xóa tìm kiếm"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
               </div>
             </div>
             {/* Menu Groups */}
@@ -649,7 +671,7 @@ export default function Sidebar({
       <div className="p-4 border-b border-gray-200 flex-shrink-0">
         <div className="flex items-center space-x-3">
           <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">A</span>
+            <span className="text-white font-bold text-sm">AM</span>
           </div>
           <div>
             <h1 className="text-lg font-bold text-gray-900">AMnote</h1>
@@ -668,7 +690,7 @@ export default function Sidebar({
             placeholder="Tìm kiếm menu..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-9 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            className="w-full pl-9 pr-9 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent focus:border-red-500 hover:border-gray-300 active:border-gray-300 outline-none"
           />
           {searchTerm && (
             <button
