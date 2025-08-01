@@ -356,6 +356,7 @@ function SidebarMenuNode({
               )}</>
             </span>
           </div>
+          {/* Không hiển thị gì ở đây - arrow sẽ được render riêng */}
         </button>
         {hasChildren && (
           <button
@@ -366,10 +367,17 @@ function SidebarMenuNode({
                 : 'text-gray-400 hover:text-red-400 hover:bg-gray-100'
             }`}
           >
-            <ChevronDown 
-              size={14} 
-              className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
-            />
+            {level === 0 ? (
+              <ChevronDown 
+                size={14} 
+                className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+              />
+            ) : (
+              <ChevronDown 
+                size={12} 
+                className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+              />
+            )}
           </button>
         )}
       </div>
